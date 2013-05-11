@@ -1,2 +1,6 @@
 WeeWikiPaint
 
+How to build:
+- Assumes node.js is installed
+- Run './jake.sh'
+
