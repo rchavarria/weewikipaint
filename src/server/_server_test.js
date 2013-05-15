@@ -2,7 +2,9 @@
 
 "use strict";
 
+var server = require("./server.js");
+
 exports.testNothing = function(test) {
-	test.ok(true, "Hello");
+	test.equals(3, server.number(), "must be equals");
 	test.done();
 };

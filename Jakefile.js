@@ -39,7 +39,7 @@ desc("Test everything");
 task("test", [], function() {
 	console.log("- testing goes here");
 
-	var reporter = require("nodeunit").reporters.minimal;
+	var reporter = require("nodeunit").reporters["default"];
 	reporter.run(["src/server/_server_test.js"]);
 });
 
