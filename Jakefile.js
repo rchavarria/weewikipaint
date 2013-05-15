@@ -1,5 +1,5 @@
 /*global desc, task, jake, fail, complete */
-
+(function() {
 "use strict";
 
 task("default", ["lint"]);
@@ -12,17 +12,26 @@ task("lint", [], function() {
 	files.include("**/*.js");
 	files.exclude("node_modules");
 
-	var options = {
-		node: true
-	};
-
-	var globals = {
-		describe: false,
-		it: false,
-		beforeEach: false,
-		afterEach: false
-	};
-
-	lint.validateFileList(files.toArray(), options, globals);
+	lint.validateFileList(files.toArray(), nodeLintOptions(), {});
 });
 
+function nodeLintOptions() {
+	return {
+		bitwise: true,
+		curly: false,
+		eqeqeq: true,
+		forin: true,
+		immed: true,
+		latedef: true,
+		newcap: true,
+		noarg: true,
+		noempty: true,
+		nonew: true,
+		regexp: true,
+		undef: true,
+		strict: true,
+		trailing: true,
+		node: true
+	};
+}
+})();
