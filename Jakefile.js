@@ -2,10 +2,11 @@
 (function() {
 "use strict";
 
-task("default", ["lint"]);
+task("default", ["lint", "test"]);
 
 desc("Lint everything");
 task("lint", [], function() {
+	console.log("- linting");
 	var lint = require("./build/lint/lint_runner.js");
 
 	var files = new jake.FileList();
@@ -32,6 +33,14 @@ task("lint", [], function() {
 
 	var passed = lint.validateFileList(files.toArray(), options, {});
 	if(!passed) fail("Lint failed");
+});
+
+desc("Test everything");
+task("test", [], function() {
+	console.log("- testing goes here");
+
+	var reporter = require("nodeunit").reporters["default"];
+	reporter.run(["test"]);
 });
 
 desc("Integrate");
