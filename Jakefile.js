@@ -59,4 +59,29 @@ task("integrate", ["default"], function() {
 	console.log("5. 'git checkout master' //para volver al curro en master");
 });
 
+desc("Enforcing node version 0.10.5");
+task("node", [], function() {
+	var expectedVersion = "v0.10.5";
+
+	var command = "node --version";
+	console.log("> " + command);
+
+	var stdout = "";
+	var process = jake.createExec(command, {printStdout: true, printStderr: true} );
+	process.on("stdout", function(chunk) {
+		stdout += chunk;
+	});
+	process.on("cmdEnd", function() {
+		console.log(stdout);
+		
+		if(stdout !== expectedVersion + "\n") 
+			fail("Wrong node version. Expected is " + expectedVersion);
+
+		complete();
+	});
+
+	process.run();
+}, {async: true});
+
+
 })();
