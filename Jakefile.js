@@ -5,7 +5,7 @@
 task("default", ["lint", "test"]);
 
 desc("Lint everything");
-task("lint", [], function() {
+task("lint", ["node"], function() {
 	console.log("- linting");
 	var lint = require("./build/lint/lint_runner.js");
 
@@ -36,7 +36,7 @@ task("lint", [], function() {
 });
 
 desc("Test everything");
-task("test", [], function() {
+task("test", ["node"], function() {
 	console.log("- testing goes here");
 
 	var reporter = require("nodeunit").reporters["default"];
@@ -63,25 +63,31 @@ desc("Enforcing node version 0.10.5");
 task("node", [], function() {
 	var expectedVersion = "v0.10.5";
 
-	var command = "node --version";
-	console.log("> " + command);
-
-	var stdout = "";
-	var process = jake.createExec(command, {printStdout: true, printStderr: true} );
-	process.on("stdout", function(chunk) {
-		stdout += chunk;
-	});
-	process.on("cmdEnd", function() {
+	sh("node --version", function(stdout) {
 		console.log(stdout);
 		
-		if(stdout !== expectedVersion + "\n") 
+		if(stdout !== expectedVersion + "\n")
 			fail("Wrong node version. Expected is " + expectedVersion);
 
 		complete();
 	});
 
-	process.run();
 }, {async: true});
 
+function sh(command, callback) {
+	console.log("> " + command);
+
+	var stdout = "";
+
+	var process = jake.createExec(command, {printStdout: true, printStderr: true} );
+	process.on("stdout", function(chunk) {
+		stdout += chunk;
+	});
+	process.on("cmdEnd", function() {
+		callback(stdout);
+	});
+
+	process.run();
+}
 
 })();
