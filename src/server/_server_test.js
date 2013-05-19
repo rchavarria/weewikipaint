@@ -6,14 +6,6 @@
 var server = require("./server.js");
 var http = require("http");
 
-exports.setUp = function(done) {
-	server.start(8080, done);
-};
-
-exports.tearDown = function(done) {
-	server.stop( done );
-};
-
 function httpGet(url, callback) {
 	var request = http.get(url);
 	request.on("response", function(response) {
@@ -31,9 +23,36 @@ function httpGet(url, callback) {
 }
 
 exports.test_respondsToRequests = function(test) {
+	server.start(8080);
+
 	httpGet("http://localhost:8080", function(response, responseText) {
 		test.equals(response.statusCode, 200, "status code");
 		test.equals(responseText, "Hello World", "response text");
+		server.stop(function() {
+			test.done();
+		});
+	});
+
+
+};
+
+exports.test_serverRequiresPortNumber = function(test) {
+	test.throws(function() {
+		server.start();
+	});
+	test.done();
+};
+
+exports.test_serverRunsCallbackWhenStopCompletes = function(test) {
+	server.start(8080);
+	server.stop(function() {
 		test.done();
 	});
+};
+
+exports.test_callingServerStopsWhenNotRunningThrowsException = function(test) {
+	test.throws(function() {
+		server.stop();
+	});
+	test.done();
 };
