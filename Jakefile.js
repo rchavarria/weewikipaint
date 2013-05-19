@@ -1,8 +1,17 @@
-/*global desc, task, jake, fail, complete */
+/*global desc, task, jake, fail, complete, directory */
 (function() {
 "use strict";
 
+var TEMP_TESTFILE_DIR = "generated/test";
+
+directory(TEMP_TESTFILE_DIR);
+
 task("default", ["lint", "test"]);
+
+desc("Delete all generated files");
+task("clean", [], function() {
+	jake.rmRf("generated");
+});
 
 desc("Lint everything");
 task("lint", ["node"], function() {
@@ -36,7 +45,7 @@ task("lint", ["node"], function() {
 });
 
 desc("Test everything");
-task("test", ["node"], function() {
+task("test", ["node", TEMP_TESTFILE_DIR], function() {
 	console.log("- testing goes here");
 
 	var reporter = require("nodeunit").reporters["default"];
