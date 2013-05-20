@@ -3,7 +3,6 @@
 "use strict";
 
 var TEMP_TESTFILE_DIR = "generated/test";
-
 directory(TEMP_TESTFILE_DIR);
 
 task("default", ["lint", "test"]);
