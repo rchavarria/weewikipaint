@@ -47,22 +47,37 @@
 		test.done();
 	};
 
-	exports.test_serverServesAFile = function(test) {
+	exports.test_serverServesHomePageFromFile = function(test) {
 		var fileData = "This is served from a file";
-
 		fs.writeFileSync(TEST_FILE, fileData);
-		server.start(TEST_FILE, 8080);
 
 		httpGet("http://localhost:8080", function(response, responseText) {
 			test.equals(response.statusCode, 200, "status code");
 			test.equals(responseText, fileData, "response text");
-			server.stop(function() {
-				test.done();
-			});
+			test.done();
+		});
+	};
+
+	exports.test_serverServesHomePageToIndex = function(test) {
+		var fileData = "This is served from a file";
+		fs.writeFileSync(TEST_FILE, fileData);
+
+		httpGet("http://localhost:8080/index.html", function(response, responseText) {
+			test.equals(response.statusCode, 200, "status code");
+			test.done();
+		});
+	};
+
+	exports.test_serverResponds404ToEverythingButHomePage = function(test) {
+		httpGet("http://localhost:8080/bargle", function(response, responseText) {
+			test.equals(response.statusCode, 404, "status code");
+			test.done();
 		});
 	};
 
 	function httpGet(url, callback) {
+		server.start(TEST_FILE, 8080);
+
 		var request = http.get(url);
 		request.on("response", function(response) {
 			var responseText = "";
@@ -73,7 +88,9 @@
 			});
 			
 			response.on("end", function() {
-				callback(response, responseText);
+				server.stop(function() {
+					callback(response, responseText);
+				});
 			});
 		});
 	}
