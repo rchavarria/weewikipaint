@@ -3,12 +3,12 @@
 
 	var child_process = require("child_process");
 	var http = require("http");
-	
+
 	exports.test_for_smoke = function(test) {
 		runServer("node src/server/weewikipaint 8080", function() {
 			httpGet("http://localhost:8080", function() {
 				test.done();
-			})
+			});
 		});
 	};
 
