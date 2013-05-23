@@ -47,8 +47,12 @@ desc("Test everything");
 task("test", ["node", TEMP_TESTFILE_DIR], function() {
 	console.log("- testing goes here");
 
+	var files = new jake.FileList();
+	files.include("**/*_test.js");
+	files.exclude("node_modules");
+
 	var reporter = require("nodeunit").reporters["default"];
-	reporter.run(["src/server/_server_test.js"], null, function(failures) {
+	reporter.run(files.toArray(), null, function(failures) {
 		if(failures) fail("Tests failed");
 		complete();
 	});
