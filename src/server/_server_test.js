@@ -94,20 +94,20 @@
 	};
 
 	function httpGet(url, callback) {
-		server.start(TEST_HOME_PAGE, TEST_404_PAGE, 8080);
+		server.start(TEST_HOME_PAGE, TEST_404_PAGE, 8080, function() {
+			var request = http.get(url);
+			request.on("response", function(response) {
+				var responseText = "";
+				response.setEncoding("utf8");
 
-		var request = http.get(url);
-		request.on("response", function(response) {
-			var responseText = "";
-			response.setEncoding("utf8");
-
-			response.on("data", function(chunk) {
-				responseText += chunk;
-			});
-			
-			response.on("end", function() {
-				server.stop(function() {
-					callback(response, responseText);
+				response.on("data", function(chunk) {
+					responseText += chunk;
+				});
+				
+				response.on("end", function() {
+					server.stop(function() {
+						callback(response, responseText);
+					});
 				});
 			});
 		});

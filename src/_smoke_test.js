@@ -3,24 +3,33 @@
 
 	var child_process = require("child_process");
 	var http = require("http");
+	var child;
 
-	exports.test_for_smoke = function(test) {
-		runServer("node src/server/weewikipaint 8080", function() {
-			httpGet("http://localhost:8080", function() {
-				test.done();
-			});
+	exports.setUp = function(done) {
+		runServer(done);
+	};
+
+	exports.tearDown = function(done) {
+		child.on("exit", function() {
+			done();
+		});
+		child.kill();
+	};
+
+	exports.test_canGetHomePage = function(test) {
+		httpGet("http://localhost:8080", function(response, responseText) {
+			var homePageFound = responseText.indexOf("WeeWikiPaint home page") !== -1;
+			test.ok(homePageFound, "home page should contain WeeWikiPaint marker");
+			test.done();
 		});
 	};
 
-	var runServer = function(command, callback) {
-		child_process.exec(command, function(err, stdout, stderr) {
-			if(err !== null) {
-				console.log(stdout);
-				console.log(stderr);
-				throw err;
-			}
+	var runServer = function(callback) {
+		child = child_process.spawn("node", ["src/server/weewikipaint", "8080"]);
+		child.stdout.setEncoding("utf8");
 
-			callback();
+		child.stdout.on("data", function(chunk) {
+			if(chunk.trim() === "Server started") callback();
 		});
 	};
 
