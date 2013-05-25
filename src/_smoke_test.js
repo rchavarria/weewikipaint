@@ -24,6 +24,14 @@
 		});
 	};
 
+	exports.test_canGet404Page = function(test) {
+		httpGet("http://localhost:8080/noneexistant.html", function(response, responseText) {
+			var errorPage404Found= responseText.indexOf("WeeWikiPaint 404 page") !== -1;
+			test.ok(errorPage404Found "home page should contain 404 marker");
+			test.done();
+		});
+	};
+
 	var runServer = function(callback) {
 		child = child_process.spawn("node", ["src/server/weewikipaint", "8080"]);
 		child.stdout.setEncoding("utf8");
