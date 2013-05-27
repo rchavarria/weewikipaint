@@ -37,7 +37,7 @@
 	var runServer = function(callback) {
 		var commandLine = parseProcFile();
 
-		child = child_process.spawn(commandLine[0], commandLine.slice(1));
+		child = child_process.spawn(commandLine.command, commandLine.options);
 		child.stdout.setEncoding("utf8");
 
 		child.stdout.on("data", function(chunk) {
@@ -62,20 +62,17 @@
 	}
 
 	function parseProcFile() {
-		var procfile = fs.readFileSync("Procfile", "utf8");
-		var matches = procfile.trim().match(/^web:(.*)$/);
-		if(matches === null) throw new Error("Can't parse Procfile");
+		var procfile = require("procfile");
+		var file = fs.readFileSync("Procfile", "utf8");
+		var parsed = procfile.parse(file);
 
-		var commandLine = matches[1];
-		var args = commandLine.split(" "); // deja cadenas vacías en el array
-		args = args.filter( function(element) {
-			return (element.trim() !== "");
-		});
-		args = args.map( function(element) {
+		var web = parsed.web;
+		web.options = web.options.map( function(element) {
 			if(element === "$PORT") return "8080";
 			else return element;
 		});
-		return args;
+
+		return parsed.web;
 	}
 
 })();
