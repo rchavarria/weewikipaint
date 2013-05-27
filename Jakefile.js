@@ -71,9 +71,9 @@ task("integrate", ["default"], function() {
 	console.log("5. 'git checkout master' //para volver al curro en master");
 });
 
-desc("Enforcing node version 0.10.5");
+desc("Enforcing node version 0.10.8");
 task("node", [], function() {
-	var expectedVersion = "v0.10.5";
+	var expectedVersion = "v0.10.8";
 
 	sh("node --version", function(stdout) {
 		console.log(stdout);
