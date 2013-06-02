@@ -50,7 +50,8 @@ task("test", ["node", TEMP_TESTFILE_DIR], function() {
 	var files = new jake.FileList();
 	files.include("**/*_test.js");
 	files.exclude("node_modules");
-
+	files.exclude("src/server/_release_test.js");
+	
 	var reporter = require("nodeunit").reporters["default"];
 	reporter.run(files.toArray(), null, function(failures) {
 		if(failures) fail("Tests failed");
@@ -69,6 +70,13 @@ task("integrate", ["default"], function() {
 	console.log("3. 'git checkout integration'");
 	console.log("4. 'git merge master --no-ff --log' // para llevar los cambios que funcionan a la rama 'integration'");
 	console.log("5. 'git checkout master' //para volver al curro en master");
+});
+
+desc("Deploy to the web");
+task("deploy", ["default"], function() {
+	console.log("1. make sure 'git status' is clean");
+	console.log("2. git push heroku master");
+	console.log("3. ./jake releasetest");
 });
 
 desc("Enforcing node version 0.10.8");
