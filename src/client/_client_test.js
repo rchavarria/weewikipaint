@@ -1,9 +1,13 @@
+/* global describe, it, expect */
 
-var assert = chai.assert;
+(function () {
+"use strict";
 
 describe("test something", function() {
 
 	it("should run", function() {
-		assert.equal("foo", "foo");
+		expect("foo").to.equal("foo");
 	});
 });
+
+}());

@@ -20,6 +20,7 @@ task("lint", ["node"], function() {
 	var files = new jake.FileList();
 	files.include("**/*.js");
 	files.exclude("node_modules");
+	files.exclude("karma.conf.js");
 
 	var options = {
 		bitwise: true,
@@ -44,20 +45,30 @@ task("lint", ["node"], function() {
 });
 
 desc("Test everything");
-task("test", ["node", TEMP_TESTFILE_DIR], function() {
-	console.log("- testing goes here");
+task("test", ["testServer", "testClient"], function() {
+	console.log("- tests done");
+});
+
+desc("Test everything");
+task("testServer", ["node", TEMP_TESTFILE_DIR], function() {
+	console.log("- test server code goes here");
 
 	var files = new jake.FileList();
 	files.include("**/*_test.js");
 	files.exclude("node_modules");
-	files.exclude("src/server/_release_test.js");
-	
+	files.exclude("src/client/_*_test.js");
+
 	var reporter = require("nodeunit").reporters["default"];
 	reporter.run(files.toArray(), null, function(failures) {
 		if(failures) fail("Tests failed");
 		complete();
 	});
 }, { async: true });
+
+desc("Test client side");
+task("testClient", function() {
+	console.log("- test client code goes here");
+});
 
 desc("Integrate");
 task("integrate", ["default"], function() {
