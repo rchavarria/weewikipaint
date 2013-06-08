@@ -2,6 +2,8 @@
 (function() {
 "use strict";
 
+var lint = require("./build/lint/lint_runner.js");
+
 var TEMP_TESTFILE_DIR = "generated/test";
 directory(TEMP_TESTFILE_DIR);
 
@@ -13,44 +15,29 @@ task("clean", [], function() {
 });
 
 desc("Lint everything");
-task("lint", ["node"], function() {
-	console.log("- linting");
-	var lint = require("./build/lint/lint_runner.js");
+task("lint", ["node", "lintNode", "lintClient"]);
 
-	var files = new jake.FileList();
-	files.include("**/*.js");
-	files.exclude("node_modules");
-	files.exclude("karma.conf.js");
+desc("Lint everything");
+task("lintNode", function() {
+	console.log("- linting node");
+	var passed = lint.validateFileList(nodeFiles(), nodeLintOptions(), {});
+	if(!passed) fail("Lint server files failed");
+});
 
-	var options = {
-		bitwise: true,
-		curly: false,
-		eqeqeq: true,
-		forin: true,
-		immed: true,
-		latedef: true,
-		newcap: true,
-		noarg: true,
-		noempty: true,
-		nonew: true,
-		regexp: true,
-		undef: true,
-		strict: true,
-		trailing: true,
-		node: true
-	};
-
-	var passed = lint.validateFileList(files.toArray(), options, {});
-	if(!passed) fail("Lint failed");
+desc("Lint client files");
+task("lintClient", [], function() {
+	console.log("- linting client files");
+	var passed = lint.validateFileList(clientFiles(), browserLintOptions(), {});
+	if(!passed) fail("Lint client files failed");
 });
 
 desc("Test everything");
-task("test", ["testServer", "testClient"], function() {
+task("test", ["testNode", "testClient"], function() {
 	console.log("- tests done");
 });
 
 desc("Test everything");
-task("testServer", ["node", TEMP_TESTFILE_DIR], function() {
+task("testNode", ["node", TEMP_TESTFILE_DIR], function() {
 	console.log("- test server code goes here");
 
 	var files = new jake.FileList();
@@ -70,10 +57,14 @@ task("testClient", function() {
 	console.log("- test client code goes here");
 
 	sh("node node_modules/.bin/karma run", "Client tests failed", function(stdout) {
-			console.log(stdout);
-			complete();
+		console.log(stdout);
+		testBrowserIsTested("IE 8.0", stdout);
 	});
 }, {async: true});
+
+function testBrowserIsTested(browserName, output) {
+	fail(browserName + " was not tested!");
+}
 
 desc("Integrate");
 task("integrate", ["default"], function() {
@@ -128,6 +119,54 @@ function sh(command, errorMessage, callback) {
 	});
 
 	process.run();
+}
+
+function nodeFiles() {
+	var files = new jake.FileList();
+	files.include("**/*.js");
+	files.exclude("node_modules");
+	files.exclude("karma.conf.js");
+	files.exclude("src/client/**");
+	return files.toArray();
+}
+
+function clientFiles() {
+	var files = new jake.FileList();
+	files.include("src/client/**/*.js");
+
+	return files.toArray();
+}
+
+function nodeLintOptions() {
+	var options = lintOptions();
+	options.node = true;
+	return options;
+}
+
+function browserLintOptions() {
+	var options = lintOptions();
+	options.browser = true;
+	return options;
+}
+
+function lintOptions() {
+	var options = {
+		bitwise: true,
+		curly: false,
+		eqeqeq: true,
+		forin: true,
+		immed: true,
+		latedef: true,
+		newcap: true,
+		noarg: true,
+		noempty: true,
+		nonew: true,
+		regexp: true,
+		undef: true,
+		strict: true,
+		trailing: true
+	};
+	return options;
 }
 
 })();
