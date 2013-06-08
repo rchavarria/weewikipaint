@@ -68,7 +68,12 @@ task("testServer", ["node", TEMP_TESTFILE_DIR], function() {
 desc("Test client side");
 task("testClient", function() {
 	console.log("- test client code goes here");
-});
+
+	sh("node node_modules/.bin/karma run", "Client tests failed", function(stdout) {
+			console.log(stdout);
+			complete();
+	});
+}, {async: true});
 
 desc("Integrate");
 task("integrate", ["default"], function() {
@@ -94,7 +99,7 @@ desc("Enforcing node version 0.10.8");
 task("node", [], function() {
 	var expectedVersion = "v0.10.8";
 
-	sh("node --version", function(stdout) {
+	sh("node --version", "Wrong node version", function(stdout) {
 		console.log(stdout);
 		
 		if(stdout !== expectedVersion + "\n")
@@ -105,7 +110,7 @@ task("node", [], function() {
 
 }, {async: true});
 
-function sh(command, callback) {
+function sh(command, errorMessage, callback) {
 	console.log("> " + command);
 
 	var stdout = "";
@@ -113,6 +118,10 @@ function sh(command, callback) {
 	var process = jake.createExec(command, {printStdout: true, printStderr: true} );
 	process.on("stdout", function(chunk) {
 		stdout += chunk;
+	});
+	process.on("error", function() {
+		console.log(stdout);
+		fail(errorMessage);
 	});
 	process.on("cmdEnd", function() {
 		callback(stdout);
