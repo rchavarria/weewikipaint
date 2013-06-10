@@ -15,6 +15,11 @@ task("clean", [], function() {
 	jake.rmRf("generated");
 });
 
+desc("Start testacular/karma server");
+task("karma", [], function() {
+	sh("node node_modules/.bin/karma start build/karma.conf.js", "Could not start karma", complete);
+});
+
 desc("Lint everything");
 task("lint", ["node", "lintNode", "lintClient"]);
 
@@ -63,6 +68,9 @@ task("testClient", function() {
 		SUPPORTED_BROWSERS.forEach( function(browser) {
 			testBrowserIsTested(browser, stdout);
 		});
+		if(stdout.indexOf("0 SUCCESS") !== -1) {
+			fail("Could not test client code");
+		}
 	});
 }, {async: true});
 
