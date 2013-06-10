@@ -4,6 +4,7 @@
 
 var lint = require("./build/lint/lint_runner.js");
 
+var SUPPORTED_BROWSERS = ["Firefox 21.0 (Linux)"];
 var TEMP_TESTFILE_DIR = "generated/test";
 directory(TEMP_TESTFILE_DIR);
 
@@ -58,12 +59,17 @@ task("testClient", function() {
 
 	sh("node node_modules/.bin/karma run", "Client tests failed", function(stdout) {
 		console.log(stdout);
-		testBrowserIsTested("IE 8.0", stdout);
+
+		SUPPORTED_BROWSERS.forEach( function(browser) {
+			testBrowserIsTested(browser, stdout);
+		});
 	});
 }, {async: true});
 
 function testBrowserIsTested(browserName, output) {
-	fail(browserName + " was not tested!");
+	var searchString = browserName + ": Executed";
+	var found = output.indexOf(searchString) !== -1;
+	if(!found) fail(browserName + " was not tested!");
 }
 
 desc("Integrate");
