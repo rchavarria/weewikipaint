@@ -1,186 +1,250 @@
-/*global desc, task, jake, fail, complete, directory */
+// Copyright (c) 2012 Titanium I.T. LLC. All rights reserved. See LICENSE.txt for details.
+
+/*global desc, task, jake, fail, complete, directory*/
 (function() {
-"use strict";
+	"use strict";
 
-var lint = require("./build/lint/lint_runner.js");
+	if (!process.env.loose) console.log("For more forgiving test settings, use 'loose=true'");
 
-var SUPPORTED_BROWSERS = ["Firefox 21.0 (Linux)"];
-var TEMP_TESTFILE_DIR = "generated/test";
-directory(TEMP_TESTFILE_DIR);
+	var lint = require("./build/lint/lint_runner.js");
+	var nodeunit = require("nodeunit").reporters["default"];
+	var path = require("path");
 
-task("default", ["lint", "test"]);
+	var NODE_VERSION = "v0.10.8";
+	var SUPPORTED_BROWSERS = [
+		"Firefox 21.0 (Linux)"
+	];
 
-desc("Delete all generated files");
-task("clean", [], function() {
-	jake.rmRf("generated");
-});
+	var GENERATED_DIR = "generated";
+	var TEMP_TESTFILE_DIR = GENERATED_DIR + "/test";
 
-desc("Start testacular/karma server");
-task("karma", [], function() {
-	sh("node node_modules/.bin/karma start build/karma.conf.js", "Could not start karma", complete);
-});
+	directory(TEMP_TESTFILE_DIR);
 
-desc("Lint everything");
-task("lint", ["node", "lintNode", "lintClient"]);
-
-desc("Lint everything");
-task("lintNode", function() {
-	console.log("- linting node");
-	var passed = lint.validateFileList(nodeFiles(), nodeLintOptions(), {});
-	if(!passed) fail("Lint server files failed");
-});
-
-desc("Lint client files");
-task("lintClient", [], function() {
-	console.log("- linting client files");
-	var passed = lint.validateFileList(clientFiles(), browserLintOptions(), {});
-	if(!passed) fail("Lint client files failed");
-});
-
-desc("Test everything");
-task("test", ["testNode", "testClient"], function() {
-	console.log("- tests done");
-});
-
-desc("Test everything");
-task("testNode", ["node", TEMP_TESTFILE_DIR], function() {
-	console.log("- test server code goes here");
-
-	var files = new jake.FileList();
-	files.include("**/*_test.js");
-	files.exclude("node_modules");
-	files.exclude("src/client/_*_test.js");
-
-	var reporter = require("nodeunit").reporters["default"];
-	reporter.run(files.toArray(), null, function(failures) {
-		if(failures) fail("Tests failed");
-		complete();
+	desc("Delete all generated files");
+	task("clean", [], function() {
+		jake.rmRf(GENERATED_DIR);
 	});
-}, { async: true });
 
-desc("Test client side");
-task("testClient", function() {
-	console.log("- test client code goes here");
+	desc("Build and test");
+	task("default", ["lint", "test"]);
 
-	sh("node node_modules/.bin/karma run", "Client tests failed", function(stdout) {
-		console.log(stdout);
+	desc("Start Karma server for testing");
+	task("karma", function() {
+		sh("node", ["node_modules/karma/bin/karma", "start", "build/karma.conf.js"],
+			"Could not start Karma server", complete);
+	}, {async: true});
 
-		SUPPORTED_BROWSERS.forEach( function(browser) {
-			testBrowserIsTested(browser, stdout);
+	desc("Lint everything");
+	task("lint", ["lintNode", "lintClient"]);
+
+	task("lintNode", ["nodeVersion"], function() {
+		var passed = lint.validateFileList(nodeFiles(), nodeLintOptions(), {});
+		if (!passed) fail("Lint failed");
+	});
+
+	task("lintClient", function() {
+		var passed = lint.validateFileList(clientFiles(), browserLintOptions(), {});
+		if (!passed) fail("Lint failed");
+	});
+
+	desc("Test everything");
+	task("test", ["testNode", "testClient"]);
+
+	desc("Test server code");
+	task("testNode", ["nodeVersion", TEMP_TESTFILE_DIR], function() {
+		nodeunit.run(nodeTestFiles(), null, function(failures) {
+			if (failures) fail("Tests failed");
+			complete();
 		});
-		if(stdout.indexOf("0 SUCCESS") !== -1) {
-			fail("Could not test client code");
+	}, {async: true});
+
+	desc("Test client code");
+	task("testClient", function() {
+		var config = {};
+
+		var output = "";
+		var oldStdout = process.stdout.write;
+		process.stdout.write = function(data) {
+			output += data;
+			oldStdout.apply(this, arguments);
+		};
+
+		require("karma/lib/runner").run(config, function(exitCode) {
+			process.stdout.write = oldStdout;
+
+			if (exitCode) fail("Client tests failed (to start server, run 'jake karma')");
+			var browserMissing = false;
+			SUPPORTED_BROWSERS.forEach(function(browser) {
+				browserMissing = checkIfBrowserTested(browser, output) || browserMissing;
+			});
+			if (browserMissing && !process.env.loose) fail("Did not test all supported browsers (use 'loose=true' to suppress error)");
+			if (output.indexOf("TOTAL: 0 SUCCESS") !== -1) fail("Client tests did not run!");
+
+			complete();
+		});
+	}, {async: true});
+
+	function checkIfBrowserTested(browser, output) {
+		var missing = output.indexOf(browser + ": Executed") === -1;
+		if (missing) console.log(browser + " was not tested!");
+		return missing;
+	}
+
+	desc("Deploy to Heroku");
+	task("deploy", ["default"], function() {
+		console.log("1. Make sure 'git status' is clean.");
+		console.log("2. 'git push heroku master'");
+		console.log("3. 'jake test'");
+	});
+
+//	desc("Ensure correct version of Node is present.");
+	task("nodeVersion", [], function() {
+		function failWithQualifier(qualifier) {
+			fail("Incorrect node version. Expected " + qualifier +
+				" [" + expectedString + "], but was [" + actualString + "].");
+		}
+
+		var expectedString = NODE_VERSION;
+		var actualString = process.version;
+		var expected = parseNodeVersion("expected Node version", expectedString);
+		var actual = parseNodeVersion("Node version", actualString);
+
+		if (!process.env.loose) {
+			if (actual[0] !== expected[0] || actual[1] !== expected[1] || actual[2] !== expected[2]) {
+				failWithQualifier("exactly");
+			}
+		}
+		else {
+			if (actual[0] < expected[0]) failWithQualifier("at least");
+			if (actual[0] === expected[0] && actual[1] < expected[1]) failWithQualifier("at least");
+			if (actual[0] === expected[0] && actual[1] === expected[1] && actual[2] < expected[2]) failWithQualifier("at least");
 		}
 	});
-}, {async: true});
 
-function testBrowserIsTested(browserName, output) {
-	var searchString = browserName + ": Executed";
-	var found = output.indexOf(searchString) !== -1;
-	if(!found) fail(browserName + " was not tested!");
-}
-
-desc("Integrate");
-task("integrate", ["default"], function() {
-	console.log("1. make sure 'git status' is clean");
-	console.log("2. build on the integration box");
-	console.log("    a. walk over integration box");
-	console.log("    b. 'git pull' // para coger los últimos cambios en 'master'");
-	console.log("    c. 'jake' con el default task");
-	console.log("    d. if jake fails, stop! tray again after fixing the issue.");
-	console.log("3. 'git checkout integration'");
-	console.log("4. 'git merge master --no-ff --log' // para llevar los cambios que funcionan a la rama 'integration'");
-	console.log("5. 'git checkout master' //para volver al curro en master");
-});
-
-desc("Deploy to the web");
-task("deploy", ["default"], function() {
-	console.log("1. make sure 'git status' is clean");
-	console.log("2. git push heroku master");
-	console.log("3. ./jake releasetest");
-});
-
-desc("Enforcing node version 0.10.8");
-task("node", [], function() {
-	var expectedVersion = "v0.10.8";
-
-	sh("node --version", "Wrong node version", function(stdout) {
-		console.log(stdout);
-		
-		if(stdout !== expectedVersion + "\n")
-			fail("Wrong node version. Expected is " + expectedVersion);
-
-		complete();
+	desc("Integration checklist");
+	task("integrate", ["default"], function() {
+		console.log("1. Make sure 'git status' is clean.");
+		console.log("2. Build on the integration box.");
+		console.log("   a. Walk over to integration box.");
+		console.log("   b. 'git pull'");
+		console.log("   c. 'npm rebuild'");
+		console.log("   d. Check status for files that need to be .gitignore'd");
+		console.log("   e. 'jake'");
+		console.log("   f. If jake fails, stop! Try again after fixing the issue.");
+		console.log("3. 'git checkout integration'");
+		console.log("4. 'git merge master --no-ff --log'");
+		console.log("5. 'git checkout master'");
 	});
 
-}, {async: true});
-
-function sh(command, errorMessage, callback) {
-	console.log("> " + command);
-
-	var stdout = "";
-
-	var process = jake.createExec(command, {printStdout: true, printStderr: true} );
-	process.on("stdout", function(chunk) {
-		stdout += chunk;
-	});
-	process.on("error", function() {
-		console.log(stdout);
-		fail(errorMessage);
-	});
-	process.on("cmdEnd", function() {
-		callback(stdout);
+	desc("End-of-episode checklist");
+	task("episode", [], function() {
+		console.log("1. Save recording.");
+		console.log("2. Double-check sound and framing.");
+		console.log("3. Commit source code.");
+		console.log("4. Check Windows compatibility");
+		console.log("   a. Switch to Windows VM");
+		console.log("   b. 'git pull'");
+		console.log("   c. 'npm rebuild'");
+		console.log("   d. Check status for files that need to be .gitignore'd");
+		console.log("   e. 'jake'");
+		console.log("5. Tag episode: 'git tag -a episodeXX -m \"End of episode XX\"'");
 	});
 
-	process.run();
-}
+	function parseNodeVersion(description, versionString) {
+		var versionMatcher = /^v(\d+)\.(\d+)\.(\d+)$/;    // v[major].[minor].[bugfix]
+		var versionInfo = versionString.match(versionMatcher);
+		if (versionInfo === null) fail("Could not parse " + description + " (was '" + versionString + "')");
 
-function nodeFiles() {
-	var files = new jake.FileList();
-	files.include("**/*.js");
-	files.exclude("node_modules");
-	files.exclude("karma.conf.js");
-	files.exclude("src/client/**");
-	return files.toArray();
-}
+		var major = parseInt(versionInfo[1], 10);
+		var minor = parseInt(versionInfo[2], 10);
+		var bugfix = parseInt(versionInfo[3], 10);
+		return [major, minor, bugfix];
+	}
 
-function clientFiles() {
-	var files = new jake.FileList();
-	files.include("src/client/**/*.js");
+	function sh(command, args, errorMessage, callback) {
+		console.log("> " + command + " " + args.join(" "));
 
-	return files.toArray();
-}
+		// Not using jake.createExec as it adds extra line-feeds into output as of v0.3.7
+		var child = require("child_process").spawn(command, args, { stdio: "pipe" });
 
-function nodeLintOptions() {
-	var options = lintOptions();
-	options.node = true;
-	return options;
-}
+		// redirect stdout
+		var stdout = "";
+		child.stdout.setEncoding("utf8");
+		child.stdout.on("data", function(chunk) {
+			stdout += chunk;
+			process.stdout.write(chunk);
+		});
 
-function browserLintOptions() {
-	var options = lintOptions();
-	options.browser = true;
-	return options;
-}
+		// redirect stderr
+		var stderr = "";
+		child.stderr.setEncoding("utf8");
+		child.stderr.on("data", function(chunk) {
+			stderr += chunk;
+			process.stderr.write(chunk);
+		});
 
-function lintOptions() {
-	var options = {
-		bitwise: true,
-		curly: false,
-		eqeqeq: true,
-		forin: true,
-		immed: true,
-		latedef: true,
-		newcap: true,
-		noarg: true,
-		noempty: true,
-		nonew: true,
-		regexp: true,
-		undef: true,
-		strict: true,
-		trailing: true
-	};
-	return options;
-}
+		// handle process exit
+		child.on("exit", function(exitCode) {
+			if (exitCode !== 0) fail(errorMessage);
+		});
+		child.on("close", function() {      // 'close' event can happen after 'exit' event
+			callback(stdout, stderr);
+		});
+	}
 
-})();
+	function nodeFiles() {
+		var javascriptFiles = new jake.FileList();
+		javascriptFiles.include("**/*.js");
+		javascriptFiles.exclude("node_modules");
+		javascriptFiles.exclude("build/karma.conf.js");
+		javascriptFiles.exclude("src/client/**");
+		return javascriptFiles.toArray();
+	}
+
+	function nodeTestFiles() {
+		var testFiles = new jake.FileList();
+		testFiles.include("src/server/**/_*_test.js");
+		testFiles.include("src/_*_test.js");
+		testFiles = testFiles.toArray();
+		return testFiles;
+	}
+
+	function clientFiles() {
+		var javascriptFiles = new jake.FileList();
+		javascriptFiles.include("src/client/**/*.js");
+		return javascriptFiles.toArray();
+	}
+
+	function nodeLintOptions() {
+		var options = globalLintOptions();
+		options.node = true;
+		return options;
+	}
+
+	function browserLintOptions() {
+		var options = globalLintOptions();
+		options.browser = true;
+		return options;
+	}
+
+	function globalLintOptions() {
+		var options = {
+			bitwise: true,
+			curly: false,
+			eqeqeq: true,
+			forin: true,
+			immed: true,
+			latedef: true,
+			newcap: true,
+			noarg: true,
+			noempty: true,
+			nonew: true,
+			regexp: true,
+			undef: true,
+			strict: true,
+			trailing: true
+		};
+		return options;
+	}
+
+}());
