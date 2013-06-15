@@ -198,6 +198,7 @@
 		javascriptFiles.exclude("node_modules");
 		javascriptFiles.exclude("build/karma.conf.js");
 		javascriptFiles.exclude("src/client/**");
+		javascriptFiles.exclude("vendor_client/**");
 		return javascriptFiles.toArray();
 	}
 

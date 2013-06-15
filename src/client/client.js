@@ -1,15 +1,11 @@
 /* global describe, it, expect, dump */
 
+var wwp = {};
+
 (function () {
 "use strict";
 
-$(function() {
-	var div = document.createElement("div");
-	div.setAttribute("id", "tdjs");
-	div.setAttribute("foo", "bar");
-	document.body.appendChild(div);
-
-	dump("div tdjs appended");
-});
+wwp.initializeDrawingArea = function() {
+};
 
 }());
