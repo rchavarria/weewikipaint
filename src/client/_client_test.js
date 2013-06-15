@@ -6,7 +6,13 @@
 describe("test something", function() {
 
 	it("should run", function() {
-		expect("foo").to.equal("foo");
+		var div = document.createElement("div");
+		div.setAttribute("id", "tdjs");
+		div.setAttribute("foo", "bar");
+		document.body.appendChild(div);
+
+		var extractedDiv = document.getElementById("tdjs");
+		expect(extractedDiv.getAttribute("foo")).to.equal("bar");
 	});
 });
 
