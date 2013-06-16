@@ -5,7 +5,10 @@ var wwp = {};
 (function () {
 "use strict";
 
-wwp.initializeDrawingArea = function() {
+var raphael = Raphael;
+
+wwp.initializeDrawingArea = function(drawingAreaId) {
+	var paper = raphael(drawingAreaId)
 };
 
 }());
