@@ -59,7 +59,7 @@
 	}, {async: true});
 
 	desc("Test client code");
-	task("testClient", function() {
+	task("testClient", ["lint"], function() {
 		var config = {};
 
 		var output = "";

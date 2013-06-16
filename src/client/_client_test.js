@@ -1,47 +1,50 @@
-/* global describe, it, expect, wwp, $, afterEach */
+/* global describe, it, expect, wwp, $, afterEach, Raphael */
 
 (function () {
 "use strict";
 
 describe("Drawing area", function() {
 
+	var drawingArea;
+
 	afterEach( function() {
-		$("#wwp-drawingArea").remove();
+		drawingArea.remove();
 	});
 
 	it("should be initialized with Raphael", function() {
 		// predefined div
-		var div = document.createElement("div");
-		div.setAttribute("id", "wwp-drawingArea");
-		document.body.appendChild(div);
+		drawingArea = $("<div></div>");
+		$(document.body).append(drawingArea);
 
 		// initialice
-		wwp.initializeDrawingArea("wwp-drawingArea");
+		wwp.initializeDrawingArea(drawingArea[0]);
 
 		// verify
 		var extractedDiv = document.getElementById("wwp-drawingArea");
-		expect(extractedDiv).to.be.ok(); // it exist
+		expect(drawingArea).to.be.ok(); // it exist
 		// raphael adds a svg tag to our div to start drawing
-		var tagName = $(extractedDiv).children()[0].tagName.toLowerCase();
-		if(tagName === "svg") {
+		var tagName = $(drawingArea).children()[0].tagName.toLowerCase();
+		if(Raphael.type === "SVG") {
 			// we're in a browser with svg support
 			expect(tagName).to.equal("svg");
-		} else {
+		} else if(Raphael.type === "VML") {
 			// we're in a non-svg browser, e.g.: IE 8.0
 			expect(tagName).to.equal("div"); // a 'div' inside our div
+		} else {
+			throw new Error("Raphael doesn't support this browser");
 		}
 	});
 
 	it("should have same dimensions as its enclosing div", function() {
-		var testHtml = "<div style='height: 200px; width: 400px'>hi</div>";
-		$(document.body).append(testHtml);
+		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
+		$(document.body).append(drawingArea);
 
 		// initialice
-		var paper = wwp.initializeDrawingArea("wwp-drawingArea");
+		var paper = wwp.initializeDrawingArea(drawingArea[0]);
 
 		// verify
-		expect(paper.width).to.be(400);
-		expect(paper.height).to.be(200);
+		expect(paper.height).to.be(123);
+		expect(paper.width).to.be(321);
 	});
 });
 
