@@ -46,6 +46,20 @@ describe("Drawing area", function() {
 		expect(paper.height).to.be(123);
 		expect(paper.width).to.be(321);
 	});
+
+	it("should draw a line", function() {
+		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
+		$(document.body).append(drawingArea);
+		var paper = wwp.initializeDrawingArea(drawingArea[0]);
+
+		wwp.drawLine(20, 30, 30, 200);
+
+		var totalElements = 0;
+		paper.forEach(function(element) {
+			totalElements++;
+		});
+		expect(totalElements).to.equal(1);
+	});
 });
 
 }());
