@@ -13,7 +13,7 @@ wwp.initializeDrawingArea = function(drawingAreaElement) {
 };
 
 wwp.drawLine = function(startX, startY, endX, endY) {
-	paper.path("M1,1L2,2");
+	paper.path("M" + startX + "," + startY + "L" + endX + "," + endY);
 };
 
 }());

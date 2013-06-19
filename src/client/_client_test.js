@@ -54,11 +54,15 @@ describe("Drawing area", function() {
 
 		wwp.drawLine(20, 30, 30, 200);
 
-		var totalElements = 0;
+		var elements = [];
 		paper.forEach(function(element) {
-			totalElements++;
+			elements.push(element);
 		});
-		expect(totalElements).to.equal(1);
+		expect(elements.length).to.equal(1);
+
+		var element = elements[0];
+		var path = element.node.attributes.d.value;
+		expect(path).to.equal("M20,30L30,200");
 	});
 });
 
