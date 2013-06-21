@@ -1,4 +1,4 @@
-/* global describe, it, expect, wwp, $, afterEach, Raphael */
+/* global describe, it, expect, wwp, $, beforeEach, afterEach, Raphael */
 
 (function () {
 "use strict";
@@ -6,20 +6,20 @@
 describe("Drawing area", function() {
 
 	var drawingArea;
+	var paper;
+
+	beforeEach( function() {
+		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
+		$(document.body).append(drawingArea);
+		// initialice
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+	});
 
 	afterEach( function() {
 		drawingArea.remove();
 	});
 
 	it("should be initialized with Raphael", function() {
-		// predefined div
-		drawingArea = $("<div></div>");
-		$(document.body).append(drawingArea);
-
-		// initialice
-		wwp.initializeDrawingArea(drawingArea[0]);
-
-		// verify
 		var extractedDiv = document.getElementById("wwp-drawingArea");
 		expect(drawingArea).to.be.ok(); // it exist
 		// raphael adds a svg tag to our div to start drawing
@@ -36,34 +36,31 @@ describe("Drawing area", function() {
 	});
 
 	it("should have same dimensions as its enclosing div", function() {
-		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
-		$(document.body).append(drawingArea);
-
-		// initialice
-		var paper = wwp.initializeDrawingArea(drawingArea[0]);
-
-		// verify
 		expect(paper.height).to.be(123);
 		expect(paper.width).to.be(321);
 	});
 
 	it("should draw a line", function() {
-		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
-		$(document.body).append(drawingArea);
-		var paper = wwp.initializeDrawingArea(drawingArea[0]);
-
 		wwp.drawLine(20, 30, 30, 200);
-
-		var elements = [];
-		paper.forEach(function(element) {
-			elements.push(element);
-		});
+		var elements = extractElements(paper);
 		expect(elements.length).to.equal(1);
-
-		var element = elements[0];
-		var path = element.node.attributes.d.value;
+		var path = pathFor(elements[0]);
 		expect(path).to.equal("M20,30L30,200");
 	});
+
+	function extractElements(paper) {
+		var paperElements = [];
+		paper.forEach(function(element) {
+			paperElements.push(element);
+		});
+
+		return paperElements;
+	}
+
+	function pathFor(element) {
+		var box = element.getBBox();
+		return "M" + box.x + "," + box.y + "L" + box.x2 + "," + box.y2;
+	}
 });
 
 }());
