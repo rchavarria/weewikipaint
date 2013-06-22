@@ -1,4 +1,4 @@
-/* global describe, it, expect, wwp, $, beforeEach, afterEach, Raphael */
+/* global describe, it, expect, wwp, jQuery, $, beforeEach, afterEach, Raphael */
 
 (function () {
 "use strict";
@@ -46,6 +46,27 @@ describe("Drawing area", function() {
 		expect(elements.length).to.equal(1);
 		var path = pathFor(elements[0]);
 		expect(path).to.equal("M20,30L30,200");
+	});
+
+	it("responds to click events", function() {
+		// arrange
+		var eventData = new jQuery.Event();
+		eventData.pageX = 20;
+		eventData.pageY = 30;
+		eventData.type = "click";
+
+		// ask
+		drawingArea.trigger(eventData);
+
+		// assert
+		var elements = extractElements(paper);
+		expect(elements.length).to.equal(1);
+
+		var drawingAreaPosition = drawingArea.offset();
+		var expectedX = eventData.pageX - drawingAreaPosition.left;
+		var expectedY = eventData.pageY - drawingAreaPosition.top;
+		var path = pathFor(elements[0]);
+		expect(path).to.equal("M0,0L" + expectedX + "," + expectedY);
 	});
 
 	function extractElements(paper) {
