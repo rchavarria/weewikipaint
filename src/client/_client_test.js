@@ -69,6 +69,34 @@ describe("Drawing area", function() {
 		expect(path).to.equal("M0,0L" + expectedX + "," + expectedY);
 	});
 
+	it("takes into account border", function() {
+		drawingArea.remove();
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		// initialice
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// arrange
+		var eventData = new jQuery.Event();
+		eventData.pageX = 20;
+		eventData.pageY = 30;
+		eventData.type = "click";
+
+		// ask
+		drawingArea.trigger(eventData);
+
+		// assert
+		var elements = extractElements(paper);
+		expect(elements.length).to.equal(1);
+
+		var drawingAreaPosition = drawingArea.offset();
+		var borderWidth = 13;
+		var expectedX = eventData.pageX - drawingAreaPosition.left - borderWidth;
+		var expectedY = eventData.pageY - drawingAreaPosition.top - borderWidth;
+		var path = pathFor(elements[0]);
+		expect(path).to.equal("M0,0L" + expectedX + "," + expectedY);
+	});
+
 	function extractElements(paper) {
 		var paperElements = [];
 		paper.forEach(function(element) {

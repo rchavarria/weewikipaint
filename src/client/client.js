@@ -14,8 +14,12 @@ wwp.initializeDrawingArea = function(drawingAreaElement) {
 
 	drawingArea.click( function(event) {
 		var position = drawingArea.offset();
-		var x = event.pageX - position.left;
-		var y = event.pageY - position.top;
+
+		var borderTop = parseInt(drawingArea.css("border-top-width"), 10);
+		var borderLeft = parseInt(drawingArea.css("border-left-width"), 10);
+
+		var x = event.pageX - position.left - borderLeft;
+		var y = event.pageY - position.top - borderTop;
 		wwp.drawLine(0, 0, x, y);
 	});
 
