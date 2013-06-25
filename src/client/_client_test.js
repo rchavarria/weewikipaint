@@ -50,29 +50,37 @@ describe("Drawing area", function() {
 
 	it("takes into account border", function() {
 		drawingArea.remove();
+		// arrange
 		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
 		$(document.body).append(drawingArea);
-		// initialice
 		paper = wwp.initializeDrawingArea(drawingArea[0]);
 		
 		// ask
 		clickMouse(20, 30);
 		clickMouse(50, 60);
+		clickMouse(40, 20);
 
 		// assert
-		var start = relativePosition(20, 30);
-		var end = relativePosition(50, 60);
-
-		var elements = extractElements(paper);
-		expect(elements.length).to.equal(1);
-		var path = pathFor(elements[0]);
-		expect(path).to.equal("M" + start.x + "," + start.y + "L" + end.x + "," + end.y);
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 	});
 
-	function clickMouse(pageX, pageY) {
+	function paperPaths(paper) {
+		var elements = extractElements(paper);
+
+		// this will return an array of arrays
+		var result = elements.map( function (element) {
+			var box = element.getBBox();
+			return [box.x, box.y, box.x2, box.y2];
+		});
+		return result;
+	}
+
+	function clickMouse(relativeX, relativeY) {
+		var drawingAreaPosition = drawingArea.offset();
+
 		var eventData = new jQuery.Event();
-		eventData.pageX = pageX;
-		eventData.pageY = pageY;
+		eventData.pageX = relativeX + drawingAreaPosition.left;
+		eventData.pageY = relativeY + drawingAreaPosition.top;
 		eventData.type = "click";
 
 		drawingArea.trigger(eventData);
@@ -85,17 +93,6 @@ describe("Drawing area", function() {
 		});
 
 		return paperElements;
-	}
-
-	function relativePosition(pageX, pageY) {
-		var drawingAreaPosition = drawingArea.offset();
-		var expectedX = pageX - drawingAreaPosition.left;
-		var expectedY = pageY - drawingAreaPosition.top;
-
-		return {
-			x: expectedX,
-			y: expectedY
-		};
 	}
 
 	function pathFor(element) {
