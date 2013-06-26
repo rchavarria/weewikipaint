@@ -14,7 +14,7 @@ wwp.initializeDrawingArea = function(drawingAreaElement) {
 	paper = new Raphael(drawingAreaElement);
 
 	var drawingArea = $(drawingAreaElement);
-	drawingArea.click( function(event) {
+	drawingArea.mousemove( function(event) {
 		var position = drawingArea.offset();
 		var x = event.pageX - position.left;
 		var y = event.pageY - position.top;
