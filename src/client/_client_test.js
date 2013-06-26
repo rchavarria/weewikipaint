@@ -47,7 +47,7 @@ describe("Drawing area", function() {
 		expect(paperPaths(paper)).to.eql([ [20, 30, 30, 200] ]);
 	});
 
-	it("takes into account border", function() {
+	it("draws line by clicking in several points", function() {
 		drawingArea.remove();
 		// arrange
 		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
@@ -55,12 +55,28 @@ describe("Drawing area", function() {
 		paper = wwp.initializeDrawingArea(drawingArea[0]);
 		
 		// ask
-		clickMouse(20, 30);
-		clickMouse(50, 60);
-		clickMouse(40, 20);
+		mouseClick(20, 30);
+		mouseClick(50, 60);
+		mouseClick(40, 20);
 
 		// assert
 		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+	});
+
+	it("draws line by dragging the mouse", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+		mouseUp(50, 60);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
 	});
 
 	function paperPaths(paper) {
@@ -73,13 +89,29 @@ describe("Drawing area", function() {
 		return result;
 	}
 
-	function clickMouse(relativeX, relativeY) {
+	function mouseClick(relativeX, relativeY) {
+		mouseEvent("click", relativeX, relativeY);
+	}
+
+	function mouseDown(relativeX, relativeY) {
+		mouseEvent("mousedown", relativeX, relativeY);
+	}
+
+	function mouseMove(relativeX, relativeY) {
+		mouseEvent("mousemove", relativeX, relativeY);
+	}
+
+	function mouseUp(relativeX, relativeY) {
+		mouseEvent("mouseup", relativeX, relativeY);
+	}
+
+	function mouseEvent(event, relativeX, relativeY) {
 		var drawingAreaPosition = drawingArea.offset();
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = relativeX + drawingAreaPosition.left;
 		eventData.pageY = relativeY + drawingAreaPosition.top;
-		eventData.type = "click";
+		eventData.type = event;
 
 		drawingArea.trigger(eventData);
 	}
