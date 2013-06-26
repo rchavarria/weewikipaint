@@ -1,4 +1,4 @@
-/* global describe, it, expect, wwp, jQuery, $, beforeEach, afterEach, Raphael */
+/* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael */
 
 (function () {
 "use strict";
@@ -44,8 +44,7 @@ describe("Drawing area", function() {
 		wwp.drawLine(20, 30, 30, 200);
 		var elements = extractElements(paper);
 		expect(elements.length).to.equal(1);
-		var path = pathFor(elements[0]);
-		expect(path).to.equal("M20,30L30,200");
+		expect(paperPaths(paper)).to.eql([ [20, 30, 30, 200] ]);
 	});
 
 	it("takes into account border", function() {
@@ -69,8 +68,7 @@ describe("Drawing area", function() {
 
 		// this will return an array of arrays
 		var result = elements.map( function (element) {
-			var box = element.getBBox();
-			return [box.x, box.y, box.x2, box.y2];
+			return pathFor(element);
 		});
 		return result;
 	}
@@ -96,8 +94,24 @@ describe("Drawing area", function() {
 	}
 
 	function pathFor(element) {
-		var box = element.getBBox();
-		return "M" + box.x + "," + box.y + "L" + box.x2 + "," + box.y2;
+		if(Raphael.svg) return vmlPathFor(element);
+		else throw new Error("Raphael mode not implemented");
+	}
+
+	function vmlPathFor(element) {
+		var path = element.node.attributes.d.value;
+		var regex = /M(\d+),(\d+)L(\d+),(\d+)/;
+		var groups = path.match(regex);
+
+		return [groups[1], groups[2], groups[3], groups[4]];
+		/*
+		return {
+			x: groups[1],
+			y: groups[2],
+			x2: groups[3],
+			y2: groups[4]
+		};
+		*/
 	}
 });
 
