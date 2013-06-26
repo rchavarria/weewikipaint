@@ -47,7 +47,23 @@ describe("Drawing area", function() {
 		expect(paperPaths(paper)).to.eql([ [20, 30, 30, 200] ]);
 	});
 
-	it("draws line by dragging the mouse", function() {
+	it("draws a line caused by a dragged mouse", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+	});
+
+	it("does not draw a line if mouse is not down", function() {
 		drawingArea.remove();
 		// arrange
 		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
@@ -58,11 +74,29 @@ describe("Drawing area", function() {
 		//mouseDown(20, 30);
 		mouseMove(20, 30);
 		mouseMove(50, 60);
-		mouseMove(40, 20);
 		//mouseUp(50, 60);
 
 		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		expect(paperPaths(paper)).to.eql([ ]);
+		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+	});
+
+	it("stops drawing lines when mouse is up after being down", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+		mouseUp(50, 60);
+		mouseMove(40, 20);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 	});
 
 	function paperPaths(paper) {
