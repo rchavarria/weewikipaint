@@ -99,6 +99,48 @@ describe("Drawing area", function() {
 		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 	});
 
+	it("draws multiple segments when mouse is dragged over multiple places", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+		mouseMove(40, 20);
+		mouseUp(40, 20);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+	});
+
+	it("draws multiple segments when mouse is dragged multiple times", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+		mouseMove(40, 20);
+		mouseUp(40, 20);
+
+		mouseMove(10, 15);
+
+		mouseDown(20, 20);
+		mouseMove(20, 40);
+		mouseMove(1, 1);
+		mouseUp(0, 0);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
+	});
+
 	function paperPaths(paper) {
 		var elements = extractElements(paper);
 
