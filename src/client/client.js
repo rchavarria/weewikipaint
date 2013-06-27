@@ -8,7 +8,6 @@ var wwp = {};
 var paper;
 
 wwp.initializeDrawingArea = function(drawingAreaElement) {
-	var isDragging = false;
 	var start = null;
 
 	paper = new Raphael(drawingAreaElement);
@@ -16,18 +15,16 @@ wwp.initializeDrawingArea = function(drawingAreaElement) {
 	var drawingArea = $(drawingAreaElement);
 
 	$(document).mousedown(function(event) {
-		isDragging = true;
 		start = relativePosition(drawingArea, event.pageX, event.pageY);
-	});
-	$(document).mouseup(function() {
-		isDragging = false;
+	}).mouseup(function() {
+		start = null;
 	});
 
 	drawingArea.mousemove( function(event) {
+		if(start === null) return;
+
 		var end = relativePosition(drawingArea, event.pageX, event.pageY);
-
-		if(start !== null && isDragging) wwp.drawLine(start.x, start.y, end.x, end.y);
-
+		wwp.drawLine(start.x, start.y, end.x, end.y);
 		start = end;
 	});
 
