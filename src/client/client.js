@@ -19,7 +19,11 @@ function handleDragEvents(drawingAreaElement) {
 
 	var drawingArea = $(drawingAreaElement);
 	$(document).mousedown(function(event) {
-		start = relativePosition(drawingArea, event.pageX, event.pageY);
+		var potentialStart = relativePosition(drawingArea, event.pageX, event.pageY);
+		if (potentialStart.x >= 0 && potentialStart.x <= paper.width &&
+			potentialStart.y >= 0 && potentialStart.y <= paper.height) {
+			start = potentialStart;
+		}
 	});
 
 	drawingArea.mousemove( function(event) {

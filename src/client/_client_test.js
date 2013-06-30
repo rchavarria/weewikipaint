@@ -134,6 +134,47 @@ describe("Drawing area", function() {
 		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 	});
 
+	it("does not draw a line if drag starts outside drawing aread", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(10, 124); // outside y coordinate
+		mouseMove(50, 60);
+		mouseDown(10, -1);  // outside y coordinate
+		mouseMove(50, 60);
+		mouseDown(322, 10); // outside x coordinate
+		mouseMove(50, 60);
+		mouseDown(-1, 10);  // outside x coordinate
+		mouseMove(50, 60);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([]);
+	});
+
+	it("draws lines if drag starts at the edges of drawing aread", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(321, 123);
+		mouseMove(50, 60);
+		mouseUp(50, 60);
+
+		mouseDown(0, 0);
+		mouseMove(50, 60);
+		mouseUp(50, 60);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
+	});
+
 	function paperPaths(paper) {
 		var result = [];
 		paper.forEach(function(element) {
