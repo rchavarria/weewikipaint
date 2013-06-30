@@ -40,13 +40,6 @@ describe("Drawing area", function() {
 		expect(paper.width).to.be(321);
 	});
 
-	it("should draw a line", function() {
-		wwp.drawLine(20, 30, 30, 200);
-		var elements = extractElements(paper);
-		expect(elements.length).to.equal(1);
-		expect(paperPaths(paper)).to.eql([ [20, 30, 30, 200] ]);
-	});
-
 	it("draws a line caused by a dragged mouse", function() {
 		drawingArea.remove();
 		// arrange
@@ -142,11 +135,10 @@ describe("Drawing area", function() {
 	});
 
 	function paperPaths(paper) {
-		var elements = extractElements(paper);
-
-		// this will return an array of arrays
-		var result = elements.map( function (element) {
-			return pathFor(element);
+		var result = [];
+		paper.forEach(function(element) {
+			var path = pathFor(element);
+			result.push(path);
 		});
 		return result;
 	}
@@ -178,15 +170,6 @@ describe("Drawing area", function() {
 		drawingArea.trigger(eventData);
 	}
 
-	function extractElements(paper) {
-		var paperElements = [];
-		paper.forEach(function(element) {
-			paperElements.push(element);
-		});
-
-		return paperElements;
-	}
-
 	function pathFor(element) {
 		if(Raphael.svg) return vmlPathFor(element);
 		else throw new Error("Raphael mode not implemented");
@@ -198,14 +181,6 @@ describe("Drawing area", function() {
 		var groups = path.match(regex);
 
 		return [groups[1], groups[2], groups[3], groups[4]];
-		/*
-		return {
-			x: groups[1],
-			y: groups[2],
-			x2: groups[3],
-			y2: groups[4]
-		};
-		*/
 	}
 });
 
