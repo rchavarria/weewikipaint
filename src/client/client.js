@@ -18,7 +18,8 @@ function handleDragEvents(drawingAreaElement) {
 	var start = null;
 
 	var drawingArea = $(drawingAreaElement);
-	$(document).mousedown(function(event) {
+	var $document = $(document);
+	$document.mousedown(function(event) {
 		var potentialStart = relativePosition(drawingArea, event.pageX, event.pageY);
 		if(isWithinDrawingArea(potentialStart)) {
 			start = potentialStart;
@@ -29,11 +30,15 @@ function handleDragEvents(drawingAreaElement) {
 		if(start === null) return;
 
 		var end = relativePosition(drawingArea, event.pageX, event.pageY);
-		drawLine(start.x, start.y, end.x, end.y);
-		start = end;
+		if(isWithinDrawingArea(end)) {
+			drawLine(start.x, start.y, end.x, end.y);
+			start = end;
+		} else {
+			start = null;
+		}
 	});
 
-	$(document).mouseup(function() {
+	$document.mouseup(function() {
 		start = null;
 	});
 }

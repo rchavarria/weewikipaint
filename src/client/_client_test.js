@@ -8,18 +8,15 @@ describe("Drawing area", function() {
 	var drawingArea;
 	var paper;
 
-	beforeEach( function() {
-		drawingArea = $("<div style='height: 123px; width: 321px'>hi</div>");
-		$(document.body).append(drawingArea);
-		// initialice
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-	});
-
 	afterEach( function() {
 		drawingArea.remove();
 	});
 
 	it("should be initialized with Raphael", function() {
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+
 		var extractedDiv = document.getElementById("wwp-drawingArea");
 		expect(drawingArea).to.be.ok(); // it exist
 		// raphael adds a svg tag to our div to start drawing
@@ -36,161 +33,134 @@ describe("Drawing area", function() {
 	});
 
 	it("should have same dimensions as its enclosing div", function() {
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+
 		expect(paper.height).to.be(123);
 		expect(paper.width).to.be(321);
 	});
 
-	it("draws a line caused by a dragged mouse", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(20, 30);
-		mouseMove(50, 60);
+	describe("line drawing", function() {
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
-		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-	});
+		beforeEach(function() {
+			drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+			$(document.body).append(drawingArea);
+			paper = wwp.initializeDrawingArea(drawingArea[0]);
+		});
 
-	it("does not draw a line if mouse is not down", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		//mouseDown(20, 30);
-		mouseMove(20, 30);
-		mouseMove(50, 60);
-		//mouseUp(50, 60);
+		it("draws a line caused by a dragged mouse", function() {
+			// ask
+			mouseDown(20, 30);
+			mouseMove(50, 60);
+			mouseUp(50, 60);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ ]);
-		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-	});
+			// assert
+			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		});
 
-	it("stops drawing lines when mouse is up after being down", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(20, 30);
-		mouseMove(50, 60);
-		mouseUp(50, 60);
-		mouseMove(40, 20);
+		it("does not draw a line if mouse is not down", function() {
+			// ask
+			//mouseDown(20, 30);
+			mouseMove(20, 30);
+			mouseMove(50, 60);
+			mouseUp(50, 60);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
-		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-	});
+			// assert
+			expect(paperPaths(paper)).to.eql([ ]);
+			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		});
 
-	it("draws multiple segments when mouse is dragged over multiple places", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(20, 30);
-		mouseMove(50, 60);
-		mouseMove(40, 20);
-		mouseUp(40, 20);
+		it("stops drawing lines when mouse is up after being down", function() {
+			// ask
+			mouseDown(20, 30);
+			mouseMove(50, 60);
+			mouseUp(50, 60);
+			mouseMove(40, 20);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-		//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-	});
+			// assert
+			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		});
 
-	it("draws multiple segments when mouse is dragged multiple times", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(20, 30);
-		mouseMove(50, 60);
-		mouseMove(40, 20);
-		mouseUp(40, 20);
+		it("draws multiple segments when mouse is dragged over multiple places", function() {
+			// ask
+			mouseDown(20, 30);
+			mouseMove(50, 60);
+			mouseMove(40, 20);
+			mouseUp(40, 20);
 
-		mouseMove(10, 15);
+			// assert
+			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+		});
 
-		mouseDown(20, 20);
-		mouseMove(20, 40);
-		mouseMove(1, 1);
-		mouseUp(0, 0);
+		it("draws multiple segments when mouse is dragged multiple times", function() {
+			mouseDown(20, 30);
+			mouseMove(50, 60);
+			mouseMove(40, 20);
+			mouseUp(40, 20);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
-	});
+			mouseMove(10, 15);
 
-	it("stops drawing when mouse leaves drawing area", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(20, 30);
-		mouseMove(50, 60);
-		mouseMove(350, 70);
-		mouseMove(70, 90);
-		mouseUp(71, 91);
+			mouseDown(20, 20);
+			mouseMove(20, 40);
+			mouseMove(1, 1);
+			mouseUp(0, 0);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
-	});
+			// assert
+			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
+		});
 
-	it("does not draw a line if drag starts outside drawing aread", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(10, 124); // outside y coordinate
-		mouseMove(50, 60);
-		mouseDown(10, -1);  // outside y coordinate
-		mouseMove(50, 60);
-		mouseDown(322, 10); // outside x coordinate
-		mouseMove(50, 60);
-		mouseDown(-1, 10);  // outside x coordinate
-		mouseMove(50, 60);
+		it("stops drawing when mouse leaves drawing area", function() {
+			// ask
+			mouseDown(20, 30);
+			mouseMove(50, 60);
+			mouseMove(350, 70);
+			mouseMove(70, 90);
+			mouseUp(71, 91);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([]);
-	});
+			// assert
+			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+		});
 
-	it("draws lines if drag starts at the edges of drawing aread", function() {
-		drawingArea.remove();
-		// arrange
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-		
-		// ask
-		mouseDown(321, 123);
-		mouseMove(50, 60);
-		mouseUp(50, 60);
+		it("does not draw a line if drag starts outside drawing aread", function() {
+			// ask
+			mouseDown(10, 124); // outside y coordinate
+			mouseMove(50, 60);
+			mouseUp(50, 60);
 
-		mouseDown(0, 0);
-		mouseMove(50, 60);
-		mouseUp(50, 60);
+			mouseDown(10, -1);  // outside y coordinate
+			mouseMove(50, 60);
+			mouseUp(50, 60);
+			
+			mouseDown(322, 10); // outside x coordinate
+			mouseMove(50, 60);
+			mouseUp(50, 60);
+			
+			mouseDown(-1, 10);  // outside x coordinate
+			mouseMove(50, 60);
+			mouseUp(50, 60);
 
-		// assert
-		expect(paperPaths(paper)).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
+			// assert
+			expect(paperPaths(paper)).to.eql([]);
+		});
+
+		it("draws lines if drag starts at the edges of drawing aread", function() {
+			// ask
+			mouseDown(321, 123);
+			mouseMove(50, 60);
+			mouseUp(50, 60);
+
+			mouseDown(0, 0);
+			mouseMove(50, 60);
+			mouseUp(50, 60);
+
+			// assert
+			expect(paperPaths(paper)).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
+		});
+
 	});
 
 	function paperPaths(paper) {
