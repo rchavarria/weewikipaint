@@ -20,8 +20,7 @@ function handleDragEvents(drawingAreaElement) {
 	var drawingArea = $(drawingAreaElement);
 	$(document).mousedown(function(event) {
 		var potentialStart = relativePosition(drawingArea, event.pageX, event.pageY);
-		if (potentialStart.x >= 0 && potentialStart.x <= paper.width &&
-			potentialStart.y >= 0 && potentialStart.y <= paper.height) {
+		if(isWithinDrawingArea(potentialStart)) {
 			start = potentialStart;
 		}
 	});
@@ -37,6 +36,11 @@ function handleDragEvents(drawingAreaElement) {
 	$(document).mouseup(function() {
 		start = null;
 	});
+}
+
+function isWithinDrawingArea(offset) {
+	return (offset.x >= 0 && offset.x <= paper.width &&
+			offset.y >= 0 && offset.y <= paper.height);
 }
 
 function drawLine(startX, startY, endX, endY) {

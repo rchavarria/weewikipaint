@@ -134,6 +134,24 @@ describe("Drawing area", function() {
 		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 	});
 
+	it("stops drawing when mouse leaves drawing area", function() {
+		drawingArea.remove();
+		// arrange
+		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+		
+		// ask
+		mouseDown(20, 30);
+		mouseMove(50, 60);
+		mouseMove(350, 70);
+		mouseMove(70, 90);
+		mouseUp(71, 91);
+
+		// assert
+		expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+	});
+
 	it("does not draw a line if drag starts outside drawing aread", function() {
 		drawingArea.remove();
 		// arrange
