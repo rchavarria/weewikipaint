@@ -56,8 +56,8 @@ describe("Drawing area", function() {
 			mouseUp(50, 60);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
-			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
+			//expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 		});
 
 		it("does not draw a line if mouse is not down", function() {
@@ -68,8 +68,8 @@ describe("Drawing area", function() {
 			mouseUp(50, 60);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ ]);
-			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			expect(lineSegments()).to.eql([ ]);
+			//expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 		});
 
 		it("stops drawing lines when mouse is up after being down", function() {
@@ -80,8 +80,8 @@ describe("Drawing area", function() {
 			mouseMove(40, 20);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
-			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
+			//expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 		});
 
 		it("draws multiple segments when mouse is dragged over multiple places", function() {
@@ -92,8 +92,8 @@ describe("Drawing area", function() {
 			mouseUp(40, 20);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
-			//expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
+			//expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
 		});
 
 		it("draws multiple segments when mouse is dragged multiple times", function() {
@@ -110,19 +110,19 @@ describe("Drawing area", function() {
 			mouseUp(0, 0);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 		});
 
 		it("stops drawing when mouse leaves drawing area", function() {
 			// ask
 			mouseDown(20, 30);
 			mouseMove(50, 60);
-			mouseMove(350, 70);
+			mouseMove(350, 70, $(document)); // we're moving over document instead of drawing area
 			mouseMove(70, 90);
 			mouseUp(71, 91);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [20, 30, 50, 60] ]);
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
 		});
 
 		it("does not draw a line if drag starts outside drawing aread", function() {
@@ -144,7 +144,7 @@ describe("Drawing area", function() {
 			mouseUp(50, 60);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([]);
+			expect(lineSegments()).to.eql([]);
 		});
 
 		it("draws lines if drag starts at the edges of drawing aread", function() {
@@ -158,12 +158,12 @@ describe("Drawing area", function() {
 			mouseUp(50, 60);
 
 			// assert
-			expect(paperPaths(paper)).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
+			expect(lineSegments()).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
 		});
 
 	});
 
-	function paperPaths(paper) {
+	function lineSegments() {
 		var result = [];
 		paper.forEach(function(element) {
 			var path = pathFor(element);
@@ -180,15 +180,17 @@ describe("Drawing area", function() {
 		mouseEvent("mousedown", relativeX, relativeY);
 	}
 
-	function mouseMove(relativeX, relativeY) {
-		mouseEvent("mousemove", relativeX, relativeY);
+	function mouseMove(relativeX, relativeY, optionalElement) {
+		mouseEvent("mousemove", relativeX, relativeY, optionalElement);
 	}
 
 	function mouseUp(relativeX, relativeY) {
 		mouseEvent("mouseup", relativeX, relativeY);
 	}
 
-	function mouseEvent(event, relativeX, relativeY) {
+	function mouseEvent(event, relativeX, relativeY, optionalElement) {
+		var $element = optionalElement || drawingArea;
+
 		var drawingAreaPosition = drawingArea.offset();
 
 		var eventData = new jQuery.Event();
@@ -196,7 +198,7 @@ describe("Drawing area", function() {
 		eventData.pageY = relativeY + drawingAreaPosition.top;
 		eventData.type = event;
 
-		drawingArea.trigger(eventData);
+		$element.trigger(eventData);
 	}
 
 	function pathFor(element) {

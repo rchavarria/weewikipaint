@@ -26,7 +26,7 @@ function handleDragEvents(drawingAreaElement) {
 		}
 	});
 
-	drawingArea.mousemove( function(event) {
+	$document.mousemove( function(event) {
 		if(start === null) return;
 
 		var end = relativePosition(drawingArea, event.pageX, event.pageY);
