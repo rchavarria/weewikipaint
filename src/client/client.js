@@ -19,10 +19,9 @@ function handleDragEvents(drawingAreaElement) {
 
 	var drawingArea = $(drawingAreaElement);
 	drawingArea.mousedown(function(event) {
-		var potentialStart = relativePosition(drawingArea, event.pageX, event.pageY);
-		if(isWithinDrawingArea(potentialStart)) {
-			start = potentialStart;
-		}
+		start = relativePosition(drawingArea, event.pageX, event.pageY);
+
+		event.preventDefault();
 	});
 
 	drawingArea.mousemove( function(event) {
@@ -40,11 +39,6 @@ function handleDragEvents(drawingAreaElement) {
 	drawingArea.mouseup(function() {
 		start = null;
 	});
-}
-
-function isWithinDrawingArea(offset) {
-	return (offset.x >= 0 && offset.x <= paper.width &&
-			offset.y >= 0 && offset.y <= paper.height);
 }
 
 function drawLine(startX, startY, endX, endY) {

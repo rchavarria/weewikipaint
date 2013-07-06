@@ -162,6 +162,13 @@ describe("Drawing area", function() {
 			expect(lineSegments()).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
 		});
 
+		it("does not select test when drag starts within drawing area", function() {
+			drawingArea.mousedown(function(event) {
+				expect(event.isDefaultPrevented()).to.be(true);
+			});
+			mouseDown(20, 30);
+		});
+
 	});
 
 	function lineSegments() {
