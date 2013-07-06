@@ -117,6 +117,7 @@ describe("Drawing area", function() {
 			// ask
 			mouseDown(20, 30);
 			mouseMove(50, 60);
+			mouseLeave(350, 70);
 			mouseMove(350, 70, $(document)); // we're moving over document instead of drawing area
 			mouseMove(70, 90);
 			mouseUp(71, 91);
@@ -127,19 +128,19 @@ describe("Drawing area", function() {
 
 		it("does not draw a line if drag starts outside drawing aread", function() {
 			// ask
-			mouseDown(10, 124); // outside y coordinate
+			mouseDown(10, 124, $(document)); // outside y coordinate
 			mouseMove(50, 60);
 			mouseUp(50, 60);
 
-			mouseDown(10, -1);  // outside y coordinate
+			mouseDown(10, -1, $(document));  // outside y coordinate
 			mouseMove(50, 60);
 			mouseUp(50, 60);
 			
-			mouseDown(322, 10); // outside x coordinate
+			mouseDown(322, 10, $(document)); // outside x coordinate
 			mouseMove(50, 60);
 			mouseUp(50, 60);
 			
-			mouseDown(-1, 10);  // outside x coordinate
+			mouseDown(-1, 10, $(document));  // outside x coordinate
 			mouseMove(50, 60);
 			mouseUp(50, 60);
 
@@ -172,20 +173,24 @@ describe("Drawing area", function() {
 		return result;
 	}
 
-	function mouseClick(relativeX, relativeY) {
-		mouseEvent("click", relativeX, relativeY);
+	function mouseClick(relativeX, relativeY, optionalElement) {
+		mouseEvent("click", relativeX, relativeY, optionalElement);
 	}
 
-	function mouseDown(relativeX, relativeY) {
-		mouseEvent("mousedown", relativeX, relativeY);
+	function mouseDown(relativeX, relativeY, optionalElement) {
+		mouseEvent("mousedown", relativeX, relativeY, optionalElement);
 	}
 
 	function mouseMove(relativeX, relativeY, optionalElement) {
 		mouseEvent("mousemove", relativeX, relativeY, optionalElement);
 	}
 
-	function mouseUp(relativeX, relativeY) {
-		mouseEvent("mouseup", relativeX, relativeY);
+	function mouseLeave(relativeX, relativeY, optionalElement) {
+		mouseEvent("mouseleave", relativeX, relativeY, optionalElement);
+	}
+
+	function mouseUp(relativeX, relativeY, optionalElement) {
+		mouseEvent("mouseup", relativeX, relativeY, optionalElement);
 	}
 
 	function mouseEvent(event, relativeX, relativeY, optionalElement) {
