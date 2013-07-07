@@ -44,7 +44,7 @@ describe("Drawing area", function() {
 	describe("line drawing", function() {
 
 		beforeEach(function() {
-			drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
+			drawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 			$(document.body).append(drawingArea);
 			paper = wwp.initializeDrawingArea(drawingArea[0]);
 		});
