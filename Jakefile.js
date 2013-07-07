@@ -198,7 +198,6 @@
 		javascriptFiles.exclude("node_modules");
 		javascriptFiles.exclude("build/karma.conf.js");
 		javascriptFiles.exclude("src/client/**");
-		javascriptFiles.exclude("vendor_client/**");
 		return javascriptFiles.toArray();
 	}
 
@@ -212,7 +211,7 @@
 
 	function clientFiles() {
 		var javascriptFiles = new jake.FileList();
-		javascriptFiles.include("src/client/**/*.js");
+		javascriptFiles.include("src/client/*.js");
 		return javascriptFiles.toArray();
 	}
 
