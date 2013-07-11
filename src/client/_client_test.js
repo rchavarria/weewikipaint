@@ -225,26 +225,30 @@ describe("Drawing area", function() {
 	}
 
 	function touchStart(relativeX, relativeY, optionalElement) {
-		touchEvent("touchstart", relativeX, relativeY, optionalElement);
+		sendTouchEVent("touchstart", relativeX, relativeY, optionalElement);
 	}
 
 	function touchMove(relativeX, relativeY, optionalElement) {
-		touchEvent("touchmove", relativeX, relativeY, optionalElement);
+		sendTouchEVent("touchmove", relativeX, relativeY, optionalElement);
 	}
 
 	function touchEnd(relativeX, relativeY, optionalElement) {
-		touchEvent("touchend", relativeX, relativeY, optionalElement);
+		sendTouchEVent("touchend", relativeX, relativeY, optionalElement);
 	}
 
-	function touchEvent(event, relativeX, relativeY, optionalElement) {
+	function sendTouchEVent(event, relativeX, relativeY, optionalElement) {
 		var $element = optionalElement || drawingArea;
 
 		var drawingAreaPosition = drawingArea.offset();
+
+		var touchEvent = document.createEvent("TouchEvent");
+		touchEvent.initTouchEvent(event, true, true);
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = relativeX + drawingAreaPosition.left;
 		eventData.pageY = relativeY + drawingAreaPosition.top;
 		eventData.type = event;
+		eventData.originalEvent = touchEvent;
 
 		$element.trigger(eventData);
 	}
