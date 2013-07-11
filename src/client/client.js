@@ -39,6 +39,24 @@ function handleDragEvents(drawingAreaElement) {
 	drawingArea.mouseup(function() {
 		start = null;
 	});
+
+	drawingArea.on("touchstart", function(event) {
+		start = relativePosition(drawingArea, event.pageX, event.pageY);
+
+		event.preventDefault();
+	});
+
+	drawingArea.on("touchmove", function(event) {
+		if(start === null) return;
+
+		var end = relativePosition(drawingArea, event.pageX, event.pageY);
+		drawLine(start.x, start.y, end.x, end.y);
+		start = end;
+	});
+
+	drawingArea.on("touchend", function() {
+		start = null;
+	});
 }
 
 function drawLine(startX, startY, endX, endY) {

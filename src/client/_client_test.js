@@ -8,15 +8,17 @@ describe("Drawing area", function() {
 	var drawingArea;
 	var paper;
 
+	beforeEach(function() {
+		drawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
+		$(document.body).append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea[0]);
+	});
+
 	afterEach( function() {
 		drawingArea.remove();
 	});
 
 	it("should be initialized with Raphael", function() {
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-
 		var extractedDiv = document.getElementById("wwp-drawingArea");
 		expect(drawingArea).to.be.ok(); // it exist
 		// raphael adds a svg tag to our div to start drawing
@@ -33,21 +35,11 @@ describe("Drawing area", function() {
 	});
 
 	it("should have same dimensions as its enclosing div", function() {
-		drawingArea = $("<div style='height: 123px; width: 321px; border-width: 13px;'>hi</div>");
-		$(document.body).append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea[0]);
-
 		expect(paper.height).to.be(123);
 		expect(paper.width).to.be(321);
 	});
 
 	describe("line drawing", function() {
-
-		beforeEach(function() {
-			drawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
-			$(document.body).append(drawingArea);
-			paper = wwp.initializeDrawingArea(drawingArea[0]);
-		});
 
 		it("draws a line caused by a dragged mouse", function() {
 			// ask
@@ -171,6 +163,25 @@ describe("Drawing area", function() {
 
 	});
 
+	describe("touch events", function() {
+		// available touch events:
+		// - touchstart
+		// - touchmove
+		// - touchend
+		// - ¿?
+
+		it("draws a line caused by a drag by touching", function() {
+			// ask
+			touchStart(20, 30);
+			touchMove(50, 60);
+			touchEnd(50, 60);
+
+			// assert
+			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
+		});
+
+	});
+
 	function lineSegments() {
 		var result = [];
 		paper.forEach(function(element) {
@@ -201,6 +212,31 @@ describe("Drawing area", function() {
 	}
 
 	function mouseEvent(event, relativeX, relativeY, optionalElement) {
+		var $element = optionalElement || drawingArea;
+
+		var drawingAreaPosition = drawingArea.offset();
+
+		var eventData = new jQuery.Event();
+		eventData.pageX = relativeX + drawingAreaPosition.left;
+		eventData.pageY = relativeY + drawingAreaPosition.top;
+		eventData.type = event;
+
+		$element.trigger(eventData);
+	}
+
+	function touchStart(relativeX, relativeY, optionalElement) {
+		touchEvent("touchstart", relativeX, relativeY, optionalElement);
+	}
+
+	function touchMove(relativeX, relativeY, optionalElement) {
+		touchEvent("touchmove", relativeX, relativeY, optionalElement);
+	}
+
+	function touchEnd(relativeX, relativeY, optionalElement) {
+		touchEvent("touchend", relativeX, relativeY, optionalElement);
+	}
+
+	function touchEvent(event, relativeX, relativeY, optionalElement) {
 		var $element = optionalElement || drawingArea;
 
 		var drawingAreaPosition = drawingArea.offset();
