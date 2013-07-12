@@ -171,6 +171,9 @@ describe("Drawing area", function() {
 		// - ¿?
 
 		it("draws a line caused by a drag by touching", function() {
+			// skip if browser does not support touch events
+			if(!browserSupportsTouchEvents()) return;
+
 			// ask
 			touchStart(20, 30);
 			touchMove(50, 60);
@@ -222,6 +225,10 @@ describe("Drawing area", function() {
 		eventData.type = event;
 
 		$element.trigger(eventData);
+	}
+
+	function browserSupportsTouchEvents() {
+		return (typeof Touch !== "undefined");
 	}
 
 	function touchStart(relativeX, relativeY, optionalElement) {
