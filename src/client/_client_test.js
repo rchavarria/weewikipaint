@@ -216,12 +216,11 @@ describe("Drawing area", function() {
 
 	function mouseEvent(event, relativeX, relativeY, optionalElement) {
 		var $element = optionalElement || drawingArea;
-
-		var drawingAreaPosition = drawingArea.offset();
+		var offset = wwp.pageOffset(drawingArea, relativeX, relativeY);
 
 		var eventData = new jQuery.Event();
-		eventData.pageX = relativeX + drawingAreaPosition.left;
-		eventData.pageY = relativeY + drawingAreaPosition.top;
+		eventData.pageX = offset.x;
+		eventData.pageY = offset.y;
 		eventData.type = event;
 
 		$element.trigger(eventData);

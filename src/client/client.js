@@ -1,6 +1,6 @@
-/* global describe, it, $, jQuery, expect, dump, Raphael */
+/* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
-var wwp = {};
+window.wwp = window.wwp || {};
 
 (function () {
 "use strict";
@@ -64,11 +64,7 @@ function drawLine(startX, startY, endX, endY) {
 }
 
 function relativePosition(drawingArea, absX, absY) {
-	var position = drawingArea.offset();
-	return {
-		x: absX - position.left,
-		y: absY - position.top
-	};
+	return wwp.relativePosition(drawingArea, absX, absY);
 }
 
 }());
