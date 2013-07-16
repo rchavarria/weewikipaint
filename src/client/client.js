@@ -21,8 +21,8 @@ function handleDragEvents(drawingAreaElement) {
 	var start = null;
 
 	var drawingArea = $(drawingAreaElement);
-	drawingArea.mousedown(function(event) {
-		start = relativePosition(drawingArea, event.pageX, event.pageY);
+	domElement.onMouseDown(function(event) {
+		start = domElement.relativePosition(event.pageX, event.pageY);
 
 		event.preventDefault();
 	});
@@ -30,7 +30,7 @@ function handleDragEvents(drawingAreaElement) {
 	drawingArea.mousemove( function(event) {
 		if(start === null) return;
 
-		var end = relativePosition(drawingArea, event.pageX, event.pageY);
+		var end = domElement.relativePosition(event.pageX, event.pageY);
 		drawLine(start.x, start.y, end.x, end.y);
 		start = end;
 	});
@@ -44,7 +44,7 @@ function handleDragEvents(drawingAreaElement) {
 	});
 
 	drawingArea.on("touchstart", function(event) {
-		start = relativePosition(drawingArea, event.pageX, event.pageY);
+		start = domElement.relativePosition(event.pageX, event.pageY);
 
 		event.preventDefault();
 	});
@@ -52,7 +52,7 @@ function handleDragEvents(drawingAreaElement) {
 	drawingArea.on("touchmove", function(event) {
 		if(start === null) return;
 
-		var end = relativePosition(drawingArea, event.pageX, event.pageY);
+		var end = domElement.relativePosition(event.pageX, event.pageY);
 		drawLine(start.x, start.y, end.x, end.y);
 		start = end;
 	});
@@ -64,10 +64,6 @@ function handleDragEvents(drawingAreaElement) {
 
 function drawLine(startX, startY, endX, endY) {
 	paper.path("M" + startX + "," + startY + "L" + endX + "," + endY);
-}
-
-function relativePosition(drawingArea, absX, absY) {
-	return domElement.relativePosition(absX, absY);
 }
 
 }());

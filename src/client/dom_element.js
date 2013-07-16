@@ -9,6 +9,10 @@ var DomElement = wwp.DomElement = function DomElement(jQueryElement) {
 	this.element = jQueryElement;
 };
 
+DomElement.prototype.onMouseDown = function(callback) {
+	this.element.mousedown(callback);
+};
+
 DomElement.prototype.relativePosition = function(absX, absY) {
 	var position = this.element.offset();
 	return {

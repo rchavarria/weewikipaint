@@ -6,10 +6,12 @@
 describe("Drawing area", function() {
 
 	var drawingArea;
+	var domElement;
 	var paper;
 
 	beforeEach(function() {
 		drawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
+		domElement = new wwp.DomElement(drawingArea);
 		$(document.body).append(drawingArea);
 		paper = wwp.initializeDrawingArea(drawingArea[0]);
 	});
@@ -216,8 +218,7 @@ describe("Drawing area", function() {
 
 	function mouseEvent(event, relativeX, relativeY, optionalElement) {
 		var $element = optionalElement || drawingArea;
-		var foo = new wwp.DomElement(drawingArea);
-		var offset = foo.pageOffset(relativeX, relativeY);
+		var offset = domElement.pageOffset(relativeX, relativeY);
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
@@ -249,9 +250,7 @@ describe("Drawing area", function() {
 		var touchEvent = document.createEvent("TouchEvent");
 		touchEvent.initTouchEvent(event, true, true);
 
-		var foo = new wwp.DomElement(drawingArea);
-		var offset = foo.pageOffset(relativeX, relativeY);
-
+		var offset = domElement.pageOffset(relativeX, relativeY);
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
 		eventData.pageY = offset.y;
