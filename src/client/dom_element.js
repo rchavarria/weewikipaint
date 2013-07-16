@@ -5,8 +5,8 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
-var DomElement = wwp.DomElement = function DomElement(browserDomElement) {
-	this.element = browserDomElement;
+var DomElement = wwp.DomElement = function DomElement(jQueryElement) {
+	this.element = jQueryElement;
 };
 
 DomElement.prototype.relativePosition = function(absX, absY) {

@@ -6,9 +6,12 @@ window.wwp = window.wwp || {};
 "use strict";
 
 var paper;
+var domElement;
 
 wwp.initializeDrawingArea = function(drawingAreaElement) {
 	paper = new Raphael(drawingAreaElement);
+
+	domElement = new wwp.DomElement($(drawingAreaElement));
 	handleDragEvents(drawingAreaElement);
 
 	return paper;
@@ -64,8 +67,7 @@ function drawLine(startX, startY, endX, endY) {
 }
 
 function relativePosition(drawingArea, absX, absY) {
-	var foo = new wwp.DomElement(drawingArea);
-	return foo.relativePosition(absX, absY);
+	return domElement.relativePosition(absX, absY);
 }
 
 }());
