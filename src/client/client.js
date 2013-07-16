@@ -27,7 +27,7 @@ function handleDragEvents(drawingAreaElement) {
 		event.preventDefault();
 	});
 
-	drawingArea.mousemove( function(event) {
+	domElement.onMouseMove( function(event) {
 		if(start === null) return;
 
 		var end = domElement.relativePosition(event.pageX, event.pageY);
@@ -35,11 +35,11 @@ function handleDragEvents(drawingAreaElement) {
 		start = end;
 	});
 
-	drawingArea.mouseleave(function() {
+	domElement.onMouseLeave(function() {
 		start = null;
 	});
 
-	drawingArea.mouseup(function() {
+	domElement.onMouseUp(function() {
 		start = null;
 	});
 

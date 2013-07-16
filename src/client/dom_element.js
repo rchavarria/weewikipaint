@@ -13,6 +13,18 @@ DomElement.prototype.onMouseDown = function(callback) {
 	this.element.mousedown(callback);
 };
 
+DomElement.prototype.onMouseMove = function(callback) {
+	this.element.mousemove(callback);
+};
+
+DomElement.prototype.onMouseLeave = function(callback) {
+	this.element.mouseleave(callback);
+};
+
+DomElement.prototype.onMouseUp = function(callback) {
+	this.element.mouseup(callback);
+};
+
 DomElement.prototype.relativePosition = function(absX, absY) {
 	var position = this.element.offset();
 	return {
