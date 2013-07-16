@@ -232,28 +232,29 @@ describe("Drawing area", function() {
 	}
 
 	function touchStart(relativeX, relativeY, optionalElement) {
-		sendTouchEVent("touchstart", relativeX, relativeY, optionalElement);
+		sendTouchEvent("touchstart", relativeX, relativeY, optionalElement);
 	}
 
 	function touchMove(relativeX, relativeY, optionalElement) {
-		sendTouchEVent("touchmove", relativeX, relativeY, optionalElement);
+		sendTouchEvent("touchmove", relativeX, relativeY, optionalElement);
 	}
 
 	function touchEnd(relativeX, relativeY, optionalElement) {
-		sendTouchEVent("touchend", relativeX, relativeY, optionalElement);
+		sendTouchEvent("touchend", relativeX, relativeY, optionalElement);
 	}
 
-	function sendTouchEVent(event, relativeX, relativeY, optionalElement) {
+	function sendTouchEvent(event, relativeX, relativeY, optionalElement) {
 		var $element = optionalElement || drawingArea;
-
-		var drawingAreaPosition = drawingArea.offset();
 
 		var touchEvent = document.createEvent("TouchEvent");
 		touchEvent.initTouchEvent(event, true, true);
 
+		var foo = new wwp.DomElement(drawingArea);
+		var offset = foo.pageOffset(relativeX, relativeY);
+
 		var eventData = new jQuery.Event();
-		eventData.pageX = relativeX + drawingAreaPosition.left;
-		eventData.pageY = relativeY + drawingAreaPosition.top;
+		eventData.pageX = offset.x;
+		eventData.pageY = offset.y;
 		eventData.type = event;
 		eventData.originalEvent = touchEvent;
 
