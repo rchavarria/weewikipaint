@@ -17,8 +17,8 @@ DomElement.prototype.relativePosition = function(absX, absY) {
 	};
 };
 
-wwp.pageOffset = function(drawingArea, relativeX, relativeY) {
-	var topLeftOfDrawingArea = drawingArea.offset();
+DomElement.prototype.pageOffset = function(relativeX, relativeY) {
+	var topLeftOfDrawingArea = this.element.offset();
 	return {
 		x: relativeX + topLeftOfDrawingArea.left,
 		y: relativeY + topLeftOfDrawingArea.top
