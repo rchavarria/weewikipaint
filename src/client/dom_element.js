@@ -25,6 +25,18 @@ DomElement.prototype.onMouseUp = function(callback) {
 	this.element.mouseup(callback);
 };
 
+DomElement.prototype.onTouchStart = function(callback) {
+	this.element.on("touchstart", callback);
+};
+
+DomElement.prototype.onTouchMove = function(callback) {
+	this.element.on("touchmove", callback);
+};
+
+DomElement.prototype.onTouchEnd = function(callback) {
+	this.element.on("touchend", callback);
+};
+
 DomElement.prototype.relativePosition = function(absX, absY) {
 	var position = this.element.offset();
 	return {

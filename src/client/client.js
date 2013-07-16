@@ -43,13 +43,13 @@ function handleDragEvents(drawingAreaElement) {
 		start = null;
 	});
 
-	drawingArea.on("touchstart", function(event) {
+	domElement.onTouchStart(function(event) {
 		start = domElement.relativePosition(event.pageX, event.pageY);
 
 		event.preventDefault();
 	});
 
-	drawingArea.on("touchmove", function(event) {
+	domElement.onTouchMove(function(event) {
 		if(start === null) return;
 
 		var end = domElement.relativePosition(event.pageX, event.pageY);
@@ -57,7 +57,7 @@ function handleDragEvents(drawingAreaElement) {
 		start = end;
 	});
 
-	drawingArea.on("touchend", function() {
+	domElement.onTouchEnd(function() {
 		start = null;
 	});
 }
