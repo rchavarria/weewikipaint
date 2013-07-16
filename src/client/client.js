@@ -64,7 +64,8 @@ function drawLine(startX, startY, endX, endY) {
 }
 
 function relativePosition(drawingArea, absX, absY) {
-	return wwp.relativePosition(drawingArea, absX, absY);
+	var foo = new wwp.DomElement(drawingArea);
+	return foo.relativePosition(absX, absY);
 }
 
 }());

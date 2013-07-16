@@ -5,8 +5,12 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
-wwp.relativePosition = function(drawingArea, absX, absY) {
-	var position = drawingArea.offset();
+var DomElement = wwp.DomElement = function DomElement(browserDomElement) {
+	this.element = browserDomElement;
+};
+
+DomElement.prototype.relativePosition = function(absX, absY) {
+	var position = this.element.offset();
 	return {
 		x: absX - position.left,
 		y: absY - position.top
