@@ -112,7 +112,7 @@ describe("Drawing area", function() {
 			mouseDown(20, 30);
 			mouseMove(50, 60);
 			mouseLeave(350, 70);
-			mouseMove(350, 70, $(document)); // we're moving over document instead of drawing area
+			mouseMove(350, 70, $(document.body)); // we're moving over document instead of drawing area
 			mouseMove(70, 90);
 			mouseUp(71, 91);
 
@@ -205,15 +205,20 @@ describe("Drawing area", function() {
 	}
 
 	function mouseMove(relativeX, relativeY, optionalElement) {
-		mouseEvent("mousemove", relativeX, relativeY, optionalElement);
+		if(optionalElement) {
+			var foo = new wwp.DomElement(optionalElement);
+			foo.mouseMove(relativeX, relativeY);
+		} else {
+			domElement.mouseMove(relativeX, relativeY);
+		}
 	}
 
 	function mouseLeave(relativeX, relativeY, optionalElement) {
-		mouseEvent("mouseleave", relativeX, relativeY, optionalElement);
+		domElement.mouseLeave(relativeX, relativeY);
 	}
 
 	function mouseUp(relativeX, relativeY, optionalElement) {
-		mouseEvent("mouseup", relativeX, relativeY, optionalElement);
+		domElement.mouseUp(relativeX, relativeY);
 	}
 
 	function mouseEvent(event, relativeX, relativeY, optionalElement) {
