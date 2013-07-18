@@ -10,7 +10,7 @@
 	var nodeunit = require("nodeunit").reporters["default"];
 	var path = require("path");
 
-	var NODE_VERSION = "v0.10.8";
+	var NODE_VERSION = "v0.10.13";
 	var SUPPORTED_BROWSERS = [
 		"Firefox 21.0 (Linux)"
 	];

@@ -10,19 +10,11 @@ var DomElement = wwp.DomElement = function DomElement(jQueryElement) {
 };
 
 DomElement.prototype.onMouseDown = function(callback) {
-	var self = this;
-	this.element.mousedown(function(event) {
-		var offset = self.relativePosition(event.pageX, event.pageY);
-		callback(event, offset);
-	});
+	this.element.mousedown(mouseStart(this, callback));
 };
 
 DomElement.prototype.onMouseMove = function(callback) {
-	var self = this;
-	this.element.mousemove(function(event) {
-		var offset = self.relativePosition(event.pageX, event.pageY);
-		callback(offset);
-	});
+	this.element.mousemove(mouseStart(this, callback));
 };
 
 DomElement.prototype.onMouseLeave = function(callback) {
@@ -34,11 +26,7 @@ DomElement.prototype.onMouseUp = function(callback) {
 };
 
 DomElement.prototype.onTouchStart = function(callback) {
-	var self = this;
-	this.element.on("touchstart", function(event) {
-		var offset = self.relativePosition(event.pageX, event.pageY);
-		callback(event, offset);
-	});
+	this.element.on("touchstart", mouseStart(this, callback));
 };
 
 DomElement.prototype.onTouchMove = function(callback) {
@@ -64,5 +52,12 @@ DomElement.prototype.pageOffset = function(relativeX, relativeY) {
 		y: relativeY + topLeftOfDrawingArea.top
 	};
 };
+
+function mouseStart(self, callback) {
+	return function(event) {
+		var offset = self.relativePosition(event.pageX, event.pageY);
+		callback(offset, event);
+	};
+}
 
 }());

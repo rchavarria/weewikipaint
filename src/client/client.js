@@ -32,7 +32,7 @@ function handleDragEvents(drawingAreaElement) {
 	domElement.onMouseUp(endDrag);
 	domElement.onTouchEnd(endDrag);
 
-	function startDrag(event, relativePosition) {
+	function startDrag(relativePosition, event) {
 		start = relativePosition;
 		event.preventDefault();
 	}
