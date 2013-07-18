@@ -21,45 +21,32 @@ function handleDragEvents(drawingAreaElement) {
 	var start = null;
 
 	var drawingArea = $(drawingAreaElement);
-	domElement.onMouseDown(function(event) {
-		start = domElement.relativePosition(event.pageX, event.pageY);
+	
+	domElement.onMouseDown(startDrag);
+	domElement.onTouchStart(startDrag);
 
+	domElement.onMouseMove(continueDrag);
+	domElement.onTouchMove(continueDrag);
+
+	domElement.onMouseLeave(endDrag);
+	domElement.onMouseUp(endDrag);
+	domElement.onTouchEnd(endDrag);
+
+	function startDrag(event, relativePosition) {
+		start = relativePosition;
 		event.preventDefault();
-	});
+	}
 
-	domElement.onMouseMove( function(event) {
+	function continueDrag(offset) {
 		if(start === null) return;
 
-		var end = domElement.relativePosition(event.pageX, event.pageY);
-		drawLine(start.x, start.y, end.x, end.y);
-		start = end;
-	});
+		drawLine(start.x, start.y, offset.x, offset.y);
+		start = offset;
+	}
 
-	domElement.onMouseLeave(function() {
+	function endDrag() {
 		start = null;
-	});
-
-	domElement.onMouseUp(function() {
-		start = null;
-	});
-
-	domElement.onTouchStart(function(event) {
-		start = domElement.relativePosition(event.pageX, event.pageY);
-
-		event.preventDefault();
-	});
-
-	domElement.onTouchMove(function(event) {
-		if(start === null) return;
-
-		var end = domElement.relativePosition(event.pageX, event.pageY);
-		drawLine(start.x, start.y, end.x, end.y);
-		start = end;
-	});
-
-	domElement.onTouchEnd(function() {
-		start = null;
-	});
+	}
 }
 
 function drawLine(startX, startY, endX, endY) {

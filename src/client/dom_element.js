@@ -10,11 +10,19 @@ var DomElement = wwp.DomElement = function DomElement(jQueryElement) {
 };
 
 DomElement.prototype.onMouseDown = function(callback) {
-	this.element.mousedown(callback);
+	var self = this;
+	this.element.mousedown(function(event) {
+		var offset = self.relativePosition(event.pageX, event.pageY);
+		callback(event, offset);
+	});
 };
 
 DomElement.prototype.onMouseMove = function(callback) {
-	this.element.mousemove(callback);
+	var self = this;
+	this.element.mousemove(function(event) {
+		var offset = self.relativePosition(event.pageX, event.pageY);
+		callback(offset);
+	});
 };
 
 DomElement.prototype.onMouseLeave = function(callback) {
@@ -26,7 +34,11 @@ DomElement.prototype.onMouseUp = function(callback) {
 };
 
 DomElement.prototype.onTouchStart = function(callback) {
-	this.element.on("touchstart", callback);
+	var self = this;
+	this.element.on("touchstart", function(event) {
+		var offset = self.relativePosition(event.pageX, event.pageY);
+		callback(event, offset);
+	});
 };
 
 DomElement.prototype.onTouchMove = function(callback) {
