@@ -7,11 +7,13 @@ describe("Drawing area", function() {
 
 	var drawingArea;
 	var domElement;
+	var documentBody;
 	var paper;
 
 	beforeEach(function() {
 		drawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		domElement = new wwp.DomElement(drawingArea);
+		documentBody = new wwp.DomElement($(document.body));
 		$(document.body).append(drawingArea);
 		paper = wwp.initializeDrawingArea(drawingArea[0]);
 	});
@@ -45,9 +47,9 @@ describe("Drawing area", function() {
 
 		it("draws a line caused by a dragged mouse", function() {
 			// ask
-			mouseDown(20, 30);
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			domElement.mouseDown(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
 			// assert
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
@@ -56,10 +58,10 @@ describe("Drawing area", function() {
 
 		it("does not draw a line if mouse is not down", function() {
 			// ask
-			//mouseDown(20, 30);
-			mouseMove(20, 30);
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			//domElement.mouseDown(20, 30);
+			domElement.mouseMove(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
 			// assert
 			expect(lineSegments()).to.eql([ ]);
@@ -68,10 +70,10 @@ describe("Drawing area", function() {
 
 		it("stops drawing lines when mouse is up after being down", function() {
 			// ask
-			mouseDown(20, 30);
-			mouseMove(50, 60);
-			mouseUp(50, 60);
-			mouseMove(40, 20);
+			domElement.mouseDown(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
+			domElement.mouseMove(40, 20);
 
 			// assert
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
@@ -80,10 +82,10 @@ describe("Drawing area", function() {
 
 		it("draws multiple segments when mouse is dragged over multiple places", function() {
 			// ask
-			mouseDown(20, 30);
-			mouseMove(50, 60);
-			mouseMove(40, 20);
-			mouseUp(40, 20);
+			domElement.mouseDown(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseMove(40, 20);
+			domElement.mouseUp(40, 20);
 
 			// assert
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20] ]);
@@ -91,17 +93,17 @@ describe("Drawing area", function() {
 		});
 
 		it("draws multiple segments when mouse is dragged multiple times", function() {
-			mouseDown(20, 30);
-			mouseMove(50, 60);
-			mouseMove(40, 20);
-			mouseUp(40, 20);
+			domElement.mouseDown(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseMove(40, 20);
+			domElement.mouseUp(40, 20);
 
-			mouseMove(10, 15);
+			domElement.mouseMove(10, 15);
 
-			mouseDown(20, 20);
-			mouseMove(20, 40);
-			mouseMove(1, 1);
-			mouseUp(0, 0);
+			domElement.mouseDown(20, 20);
+			domElement.mouseMove(20, 40);
+			domElement.mouseMove(1, 1);
+			domElement.mouseUp(0, 0);
 
 			// assert
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
@@ -109,12 +111,12 @@ describe("Drawing area", function() {
 
 		it("stops drawing when mouse leaves drawing area", function() {
 			// ask
-			mouseDown(20, 30);
-			mouseMove(50, 60);
-			mouseLeave(350, 70);
-			mouseMove(350, 70, $(document.body)); // we're moving over document instead of drawing area
-			mouseMove(70, 90);
-			mouseUp(71, 91);
+			domElement.mouseDown(20, 30);
+			domElement.mouseMove(50, 60);
+			domElement.mouseLeave(350, 70);
+			documentBody.mouseMove(350, 70);
+			domElement.mouseMove(70, 90);
+			domElement.mouseUp(71, 91);
 
 			// assert
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
@@ -122,21 +124,21 @@ describe("Drawing area", function() {
 
 		it("does not draw a line if drag starts outside drawing aread", function() {
 			// ask
-			mouseDown(10, 124, $(document)); // outside y coordinate
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			documentBody.mouseDown(10, 124); // outside y coordinate
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
-			mouseDown(10, -1, $(document));  // outside y coordinate
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			documentBody.mouseDown(10, -1);  // outside y coordinate
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 			
-			mouseDown(322, 10, $(document)); // outside x coordinate
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			documentBody.mouseDown(322, 10); // outside x coordinate
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 			
-			mouseDown(-1, 10, $(document));  // outside x coordinate
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			documentBody.mouseDown(-1, 10);  // outside x coordinate
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
 			// assert
 			expect(lineSegments()).to.eql([]);
@@ -144,13 +146,13 @@ describe("Drawing area", function() {
 
 		it("draws lines if drag starts at the edges of drawing aread", function() {
 			// ask
-			mouseDown(321, 123);
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			domElement.mouseDown(321, 123);
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
-			mouseDown(0, 0);
-			mouseMove(50, 60);
-			mouseUp(50, 60);
+			domElement.mouseDown(0, 0);
+			domElement.mouseMove(50, 60);
+			domElement.mouseUp(50, 60);
 
 			// assert
 			expect(lineSegments()).to.eql([ [321, 123, 50, 60], [0, 0, 50, 60] ]);
@@ -160,7 +162,7 @@ describe("Drawing area", function() {
 			drawingArea.mousedown(function(event) {
 				expect(event.isDefaultPrevented()).to.be(true);
 			});
-			mouseDown(20, 30);
+			domElement.mouseDown(20, 30);
 		});
 
 	});
@@ -194,43 +196,6 @@ describe("Drawing area", function() {
 			result.push(path);
 		});
 		return result;
-	}
-
-	function mouseClick(relativeX, relativeY, optionalElement) {
-		mouseEvent("click", relativeX, relativeY, optionalElement);
-	}
-
-	function mouseDown(relativeX, relativeY, optionalElement) {
-		mouseEvent("mousedown", relativeX, relativeY, optionalElement);
-	}
-
-	function mouseMove(relativeX, relativeY, optionalElement) {
-		if(optionalElement) {
-			var foo = new wwp.DomElement(optionalElement);
-			foo.mouseMove(relativeX, relativeY);
-		} else {
-			domElement.mouseMove(relativeX, relativeY);
-		}
-	}
-
-	function mouseLeave(relativeX, relativeY, optionalElement) {
-		domElement.mouseLeave(relativeX, relativeY);
-	}
-
-	function mouseUp(relativeX, relativeY, optionalElement) {
-		domElement.mouseUp(relativeX, relativeY);
-	}
-
-	function mouseEvent(event, relativeX, relativeY, optionalElement) {
-		var $element = optionalElement || drawingArea;
-		var offset = domElement.pageOffset(relativeX, relativeY);
-
-		var eventData = new jQuery.Event();
-		eventData.pageX = offset.x;
-		eventData.pageY = offset.y;
-		eventData.type = event;
-
-		$element.trigger(eventData);
 	}
 
 	function browserSupportsTouchEvents() {

@@ -13,6 +13,10 @@ DomElement.prototype.mouseMove = function(relativeX, relativeY) {
 	mouseEvent(this, "mousemove", relativeX, relativeY);
 };
 
+DomElement.prototype.mouseDown = function(relativeX, relativeY) {
+	mouseEvent(this, "mousedown", relativeX, relativeY);
+};
+
 DomElement.prototype.mouseLeave = function(relativeX, relativeY) {
 	mouseEvent(this, "mouseleave", relativeX, relativeY);
 };
