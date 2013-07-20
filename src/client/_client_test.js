@@ -159,7 +159,7 @@ describe("Drawing area", function() {
 		});
 
 		it("does not select test when drag starts within drawing area", function() {
-			oldDrawingArea.mousedown(function(event) {
+			drawingArea.onMouseDown(function(offset, event) {
 				expect(event.isDefaultPrevented()).to.be(true);
 			});
 			drawingArea.mouseDown(20, 30);
