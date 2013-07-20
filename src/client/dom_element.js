@@ -46,11 +46,11 @@ DomElement.prototype.onMouseMove = function(callback) {
 };
 
 DomElement.prototype.onMouseLeave = function(callback) {
-	this.element.mouseleave(callback);
+	this.element.mouseleave(mouseStart(this, callback));
 };
 
 DomElement.prototype.onMouseUp = function(callback) {
-	this.element.mouseup(callback);
+	this.element.mouseup(mouseStart(this, callback));
 };
 
 DomElement.prototype.touchStart = function(relativeX, relativeY) {

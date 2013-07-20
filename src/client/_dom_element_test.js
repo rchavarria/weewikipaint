@@ -13,15 +13,21 @@ describe("DOM Element", function() {
 		});
 
 		it("handles mouse down", function() {
+			testEvent(domElement.onMouseDown, domElement.mouseDown);
+			testEvent(domElement.onMouseLeave, domElement.mouseLeave);
+			testEvent(domElement.onMouseMove, domElement.mouseMove);
+			testEvent(domElement.onMouseUp, domElement.mouseUp);
+		});
+
+		function testEvent(onEvent, performEvent) {
 			var eventOffset = null;
-			domElement.onMouseDown(function(offset, event) {
+			onEvent.call(domElement, function(offset, event) {
 				eventOffset = offset;
 			});
-			domElement.mouseDown(42, 13);
+			performEvent.call(domElement, 42, 13);
 
 			expect(eventOffset).to.eql( {x: 42, y: 13} );
-
-		});
+		}
 
 	});
 
