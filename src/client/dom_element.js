@@ -27,7 +27,7 @@ DomElement.prototype.mouseUp = function(relativeX, relativeY) {
 
 function mouseEvent(self, event, relativeX, relativeY) {
 	var element = self.element;
-	var offset = self.pageOffset(relativeX, relativeY);
+	var offset = pageOffset(self, relativeX, relativeY);
 
 	var eventData = new jQuery.Event();
 	eventData.pageX = offset.x;
@@ -70,7 +70,7 @@ function sendTouchEvent(self, event, relativeX, relativeY) {
 	touchEvent.initTouchEvent(event, true, true);
 
 	var element = self.element;
-	var offset = self.pageOffset(relativeX, relativeY);
+	var offset = pageOffset(self, relativeX, relativeY);
 	var eventData = new jQuery.Event();
 	eventData.pageX = offset.x;
 	eventData.pageY = offset.y;
@@ -93,25 +93,25 @@ DomElement.prototype.onTouchEnd = function(callback) {
 	this.element.on("touchend", callback);
 };
 
-DomElement.prototype.relativePosition = function(absX, absY) {
-	var position = this.element.offset();
+function relativeOffset(self, absX, absY) {
+	var position = self.element.offset();
 	return {
 		x: absX - position.left,
 		y: absY - position.top
 	};
-};
+}
 
-DomElement.prototype.pageOffset = function(relativeX, relativeY) {
-	var topLeftOfDrawingArea = this.element.offset();
+function pageOffset(self, relativeX, relativeY) {
+	var topLeftOfDrawingArea = self.element.offset();
 	return {
 		x: relativeX + topLeftOfDrawingArea.left,
 		y: relativeY + topLeftOfDrawingArea.top
 	};
-};
+}
 
 function mouseStart(self, callback) {
 	return function(event) {
-		var offset = self.relativePosition(event.pageX, event.pageY);
+		var offset = relativeOffset(self, event.pageX, event.pageY);
 		callback(offset, event);
 	};
 }

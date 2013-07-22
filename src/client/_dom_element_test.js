@@ -12,7 +12,7 @@ describe("DOM Element", function() {
 			domElement = new wwp.DomElement( $("<div></div>") );
 		});
 
-		it("handles mouse down", function() {
+		it("handles mouse events", function() {
 			testEvent(domElement.onMouseDown, domElement.mouseDown);
 			testEvent(domElement.onMouseLeave, domElement.mouseLeave);
 			testEvent(domElement.onMouseMove, domElement.mouseMove);
