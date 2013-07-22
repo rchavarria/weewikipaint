@@ -9,7 +9,7 @@ describe("DOM Element", function() {
 		var domElement;
 
 		beforeEach(function() {
-			domElement = new wwp.DomElement( $("<div></div>") );
+			domElement = wwp.HtmlElement.fromHTML("<div></div>");
 		});
 
 		it("handles mouse events", function() {
@@ -17,6 +17,20 @@ describe("DOM Element", function() {
 			testEvent(domElement.onMouseLeave, domElement.mouseLeave);
 			testEvent(domElement.onMouseMove, domElement.mouseMove);
 			testEvent(domElement.onMouseUp, domElement.mouseUp);
+		});
+
+		it("appends elements", function() {
+			expect(domElement.element.children().length).to.be(0);
+			domElement.append(wwp.HtmlElement.fromHTML("<div></div>"));
+			expect(domElement.element.children().length).to.be(1);
+		});
+
+		it("removes elements", function() {
+			var elementToAppend = wwp.HtmlElement.fromHTML("<div></div>");
+			domElement.append(elementToAppend);
+			expect(domElement.element.children().length).to.be(1);
+			elementToAppend.remove();
+			expect(domElement.element.children().length).to.be(0);
 		});
 
 		function testEvent(onEvent, performEvent) {

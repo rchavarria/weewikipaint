@@ -5,28 +5,26 @@
 
 describe("Drawing area", function() {
 
-	var oldDrawingArea;
 	var drawingArea;
 	var documentBody;
 	var paper;
 
 	beforeEach(function() {
-		oldDrawingArea = $("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
-		drawingArea = new wwp.DomElement(oldDrawingArea);
-		documentBody = new wwp.DomElement($(document.body));
-		$(document.body).append(oldDrawingArea);
-		paper = wwp.initializeDrawingArea(oldDrawingArea[0]);
+		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
+		documentBody = new wwp.HtmlElement($(document.body));
+		documentBody.append(drawingArea);
+		paper = wwp.initializeDrawingArea(drawingArea);
 	});
 
 	afterEach( function() {
-		oldDrawingArea.remove();
+		drawingArea.remove();
 	});
 
 	it("should be initialized with Raphael", function() {
 		var extractedDiv = document.getElementById("wwp-drawingArea");
-		expect(oldDrawingArea).to.be.ok(); // it exist
+		expect(drawingArea.element).to.be.ok(); // it exist
 		// raphael adds a svg tag to our div to start drawing
-		var tagName = $(oldDrawingArea).children()[0].tagName.toLowerCase();
+		var tagName = $(drawingArea.element).children()[0].tagName.toLowerCase();
 		if(Raphael.type === "SVG") {
 			// we're in a browser with svg support
 			expect(tagName).to.equal("svg");

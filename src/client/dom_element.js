@@ -5,23 +5,35 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
-var DomElement = wwp.DomElement = function DomElement(jQueryElement) {
+var HtmlElement = wwp.HtmlElement = function HtmlElement(jQueryElement) {
 	this.element = jQueryElement;
 };
 
-DomElement.prototype.mouseMove = function(relativeX, relativeY) {
+HtmlElement.fromHTML = function(html) {
+	return new wwp.HtmlElement($(html));
+};
+
+HtmlElement.prototype.append = function(domElementToAppend) {
+	this.element.append(domElementToAppend.element);
+};
+
+HtmlElement.prototype.remove = function() {
+	this.element.remove();
+};
+
+HtmlElement.prototype.mouseMove = function(relativeX, relativeY) {
 	mouseEvent(this, "mousemove", relativeX, relativeY);
 };
 
-DomElement.prototype.mouseDown = function(relativeX, relativeY) {
+HtmlElement.prototype.mouseDown = function(relativeX, relativeY) {
 	mouseEvent(this, "mousedown", relativeX, relativeY);
 };
 
-DomElement.prototype.mouseLeave = function(relativeX, relativeY) {
+HtmlElement.prototype.mouseLeave = function(relativeX, relativeY) {
 	mouseEvent(this, "mouseleave", relativeX, relativeY);
 };
 
-DomElement.prototype.mouseUp = function(relativeX, relativeY) {
+HtmlElement.prototype.mouseUp = function(relativeX, relativeY) {
 	mouseEvent(this, "mouseup", relativeX, relativeY);
 };
 
@@ -37,31 +49,31 @@ function mouseEvent(self, event, relativeX, relativeY) {
 	element.trigger(eventData);
 }
 
-DomElement.prototype.onMouseDown = function(callback) {
+HtmlElement.prototype.onMouseDown = function(callback) {
 	this.element.mousedown(mouseStart(this, callback));
 };
 
-DomElement.prototype.onMouseMove = function(callback) {
+HtmlElement.prototype.onMouseMove = function(callback) {
 	this.element.mousemove(mouseStart(this, callback));
 };
 
-DomElement.prototype.onMouseLeave = function(callback) {
+HtmlElement.prototype.onMouseLeave = function(callback) {
 	this.element.mouseleave(mouseStart(this, callback));
 };
 
-DomElement.prototype.onMouseUp = function(callback) {
+HtmlElement.prototype.onMouseUp = function(callback) {
 	this.element.mouseup(mouseStart(this, callback));
 };
 
-DomElement.prototype.touchStart = function(relativeX, relativeY) {
+HtmlElement.prototype.touchStart = function(relativeX, relativeY) {
 	sendTouchEvent(this, "touchstart", relativeX, relativeY);
 };
 
-DomElement.prototype.touchMove = function(relativeX, relativeY) {
+HtmlElement.prototype.touchMove = function(relativeX, relativeY) {
 	sendTouchEvent(this, "touchmove", relativeX, relativeY);
 };
 
-DomElement.prototype.touchEnd = function(relativeX, relativeY) {
+HtmlElement.prototype.touchEnd = function(relativeX, relativeY) {
 	sendTouchEvent(this, "touchend", relativeX, relativeY);
 };
 
@@ -80,16 +92,15 @@ function sendTouchEvent(self, event, relativeX, relativeY) {
 	element.trigger(eventData);
 }
 
-
-DomElement.prototype.onTouchStart = function(callback) {
+HtmlElement.prototype.onTouchStart = function(callback) {
 	this.element.on("touchstart", mouseStart(this, callback));
 };
 
-DomElement.prototype.onTouchMove = function(callback) {
+HtmlElement.prototype.onTouchMove = function(callback) {
 	this.element.on("touchmove", callback);
 };
 
-DomElement.prototype.onTouchEnd = function(callback) {
+HtmlElement.prototype.onTouchEnd = function(callback) {
 	this.element.on("touchend", callback);
 };
 

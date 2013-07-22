@@ -6,31 +6,28 @@ window.wwp = window.wwp || {};
 "use strict";
 
 var paper;
-var domElement;
+var drawingArea;
 
-wwp.initializeDrawingArea = function(drawingAreaElement) {
-	paper = new Raphael(drawingAreaElement);
-
-	domElement = new wwp.DomElement($(drawingAreaElement));
-	handleDragEvents(drawingAreaElement);
+wwp.initializeDrawingArea = function(domElement) {
+	drawingArea = domElement;
+	paper = new Raphael(domElement.element[0]);
+	handleDragEvents();
 
 	return paper;
 };
 
-function handleDragEvents(drawingAreaElement) {
+function handleDragEvents() {
 	var start = null;
 
-	var drawingArea = $(drawingAreaElement);
-	
-	domElement.onMouseDown(startDrag);
-	domElement.onTouchStart(startDrag);
+	drawingArea.onMouseDown(startDrag);
+	drawingArea.onTouchStart(startDrag);
 
-	domElement.onMouseMove(continueDrag);
-	domElement.onTouchMove(continueDrag);
+	drawingArea.onMouseMove(continueDrag);
+	drawingArea.onTouchMove(continueDrag);
 
-	domElement.onMouseLeave(endDrag);
-	domElement.onMouseUp(endDrag);
-	domElement.onTouchEnd(endDrag);
+	drawingArea.onMouseLeave(endDrag);
+	drawingArea.onMouseUp(endDrag);
+	drawingArea.onTouchEnd(endDrag);
 
 	function startDrag(relativePosition, event) {
 		start = relativePosition;
