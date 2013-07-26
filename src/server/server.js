@@ -4,27 +4,31 @@
 
 var http = require("http");
 var fs = require("fs");
+var send = require("send");
 var server;
 
-exports.start = function(homePageToServe, notFoundPageToServe, port, readyCallback) {
+exports.start = function(contentDir, notFoundPageToServe, port, readyCallback) {
 	if(!port) throw new Error("port number is required");
 
 	server = http.createServer();
 
 	server.on("request", function(request, response) {
-		if(request.url === "/" || request.url === "/index.html") {
-			response.statusCode = 200;
-			serveFile(homePageToServe, response);
-		} else {
-			response.statusCode = 404;
-			serveFile(notFoundPageToServe, response);
+		send(request, request.url).
+			root(contentDir).
+			on("error", handleError).
+			pipe(response);
+
+		function handleError(err) {
+			if(err.status === 404) serveErrorFile(response, 404, contentDir + "/" + notFoundPageToServe);
+			else throw err;
 		}
 	});
 
 	server.listen(port, readyCallback);
 };
 
-var serveFile = function(file, response) {
+var serveErrorFile = function(response, statusCode, file) {
+	response.statusCode = statusCode;
 	fs.readFile(file, function(err, data) {
 		if(err) throw err;
 		response.end(data);
