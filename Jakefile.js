@@ -12,7 +12,7 @@
 
 	var NODE_VERSION = "v0.10.13";
 	var SUPPORTED_BROWSERS = [
-		"Firefox 21.0 (Linux)"
+		"Firefox 22.0 (Linux)"
 	];
 
 	var GENERATED_DIR = "generated";
