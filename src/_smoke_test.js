@@ -1,78 +1,87 @@
+// Copyright (c) 2012 Titanium I.T. LLC. All rights reserved. See LICENSE.txt for details.
 /*jshint regexp:false*/
-(function () {
-	"use strict";
 
-	var child_process = require("child_process");
-	var http = require("http");
-	var fs = require("fs");
-	var child;
+(function() {
+    "use strict";
 
-	exports.setUp = function(done) {
-		runServer(done);
-	};
+    var jake = require("jake");
+    var child_process = require("child_process");
+    var http = require("http");
+    var fs = require("fs");
+    var procfile = require("procfile");
+    var serverProcess;
 
-	exports.tearDown = function(done) {
-		child.on("exit", function() {
-			done();
-		});
-		child.kill();
-	};
+    exports.setUp = function(done) {
+        runServer(done);
+    };
 
-	exports.test_canGetHomePage = function(test) {
-		httpGet("http://localhost:8080", function(response, responseText) {
-			var homePageFound = responseText.indexOf("WeeWikiPaint home page") !== -1;
-			test.ok(homePageFound, "home page should contain WeeWikiPaint marker");
-			test.done();
-		});
-	};
+    exports.tearDown = function(done) {
+        if (!serverProcess) return;
 
-	exports.test_canGet404Page = function(test) {
-		httpGet("http://localhost:8080/noneexistant.html", function(response, responseText) {
-			var errorPage404Found= responseText.indexOf("WeeWikiPaint 404 page") !== -1;
-			test.ok(errorPage404Found, "home page should contain 404 marker");
-			test.done();
-		});
-	};
+        serverProcess.on("exit", function(code, signal) {
+            done();
+        });
+        serverProcess.kill();
+    };
 
-	var runServer = function(callback) {
-		var commandLine = parseProcFile();
+    exports.test_canGetHomePage = function(test) {
+        httpGet("http://localhost:5000", function(response, receivedData) {
+            var foundHomePage = receivedData.indexOf("WeeWikiPaint home page") !== -1;
+            test.ok(foundHomePage, "home page should have contained test marker");
+            test.done();
+        });
+    };
 
-		child = child_process.spawn(commandLine.command, commandLine.options);
-		child.stdout.setEncoding("utf8");
+    // TODO: Factor out common server name
+    exports.test_canGet404Page = function(test) {
+        httpGet("http://localhost:5000/nonexistant.html", function(response, receivedData) {
+            var foundHomePage = receivedData.indexOf("WeeWikiPaint 404 page") !== -1;
+            test.ok(foundHomePage, "404 page should have contained test marker");
+            test.done();
+        });
+    };
 
-		child.stdout.on("data", function(chunk) {
-			if(chunk.trim() === "Server started") callback();
-		});
-	};
+    exports.test_userCanDrawOnPage = function(test) {
+        var phantomJsProcess = child_process.spawn("build/phantomjs/phantomjs", ["spikes/phantomjs/spike_phantom.js"], { stdio: "inherit" });
+        phantomJsProcess.on("exit", function(code) {
+            console.log("PhantomJS exited with code: " + code);
+            test.equals(code, 0, "PhantomJS test failures");
+            test.done();
+        });
+    };
 
-	function httpGet(url, callback) {
-		var request = http.get(url);
-		request.on("response", function(response) {
-			var responseText = "";
-			response.setEncoding("utf8");
+    function runServer(callback) {
+        var commandLine = parseProcFile();
+        serverProcess = child_process.spawn(commandLine.command, commandLine.options);
+        serverProcess.stdout.setEncoding("utf8");
+        serverProcess.stdout.on("data", function(chunk) {
+            if (chunk.trim().indexOf("Server started") !== -1) callback();
+        });
+    }
 
-			response.on("data", function(chunk) {
-				responseText += chunk;
-			});
-			
-			response.on("end", function() {
-				callback(response, responseText);
-			});
-		});
-	}
+    function parseProcFile() {
+        var fileData = fs.readFileSync("Procfile", "utf8");
+        var webCommand = procfile.parse(fileData).web;
+        webCommand.options = webCommand.options.map(function(element) {
+            if (element === "$PORT") return "5000";
+            else return element;
+        });
+        return webCommand;
+    }
 
-	function parseProcFile() {
-		var procfile = require("procfile");
-		var file = fs.readFileSync("Procfile", "utf8");
-		var parsed = procfile.parse(file);
+    function httpGet(url, callback) {
+        var request = http.get(url);
+        request.on("response", function(response) {
+            var receivedData = "";
+            response.setEncoding("utf8");
 
-		var web = parsed.web;
-		web.options = web.options.map( function(element) {
-			if(element === "$PORT") return "8080";
-			else return element;
-		});
+            response.on("data", function(chunk) {
+                receivedData += chunk;
+            });
+            response.on("end", function() {
+                callback(response, receivedData);
+            });
+        });
+    }
 
-		return parsed.web;
-	}
-
-})();
+}());
