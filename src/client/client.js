@@ -13,7 +13,7 @@ wwp.initializeDrawingArea = function(domElement) {
 	svgCanvas = new wwp.SvgCanvas(domElement);
 	handleDragEvents();
 
-	return svgCanvas._paper;
+	return svgCanvas;
 };
 
 function handleDragEvents() {

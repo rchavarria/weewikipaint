@@ -7,13 +7,15 @@ describe("Drawing area", function() {
 
 	var drawingArea;
 	var documentBody;
+	var svgCanvas;
 	var paper;
 
 	beforeEach(function() {
 		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		documentBody = new wwp.HtmlElement($(document.body));
 		documentBody.append(drawingArea);
-		paper = wwp.initializeDrawingArea(drawingArea);
+		svgCanvas = wwp.initializeDrawingArea(drawingArea);
+		paper = svgCanvas._paper;
 	});
 
 	afterEach( function() {
@@ -187,30 +189,12 @@ describe("Drawing area", function() {
 
 	});
 
-	function lineSegments() {
-		var result = [];
-		paper.forEach(function(element) {
-			var path = pathFor(element);
-			result.push(path);
-		});
-		return result;
-	}
-
 	function browserSupportsTouchEvents() {
 		return (typeof Touch !== "undefined");
 	}
 
-	function pathFor(element) {
-		if(Raphael.svg) return vmlPathFor(element);
-		else throw new Error("Raphael mode not implemented");
-	}
-
-	function vmlPathFor(element) {
-		var path = element.node.attributes.d.value;
-		var regex = /M(\d+),(\d+)L(\d+),(\d+)/;
-		var groups = path.match(regex);
-
-		return [groups[1], groups[2], groups[3], groups[4]];
+	function lineSegments() {
+		return svgCanvas.lineSegments();
 	}
 });
 
