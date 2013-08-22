@@ -5,15 +5,15 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
-var paper;
 var drawingArea;
+var svgCanvas;
 
 wwp.initializeDrawingArea = function(domElement) {
 	drawingArea = domElement;
-	paper = new Raphael(domElement.element[0]);
+	svgCanvas = new wwp.SvgCanvas(domElement);
 	handleDragEvents();
 
-	return paper;
+	return svgCanvas._paper;
 };
 
 function handleDragEvents() {
@@ -37,17 +37,13 @@ function handleDragEvents() {
 	function continueDrag(offset) {
 		if(start === null) return;
 
-		drawLine(start.x, start.y, offset.x, offset.y);
+		svgCanvas.drawLine(start.x, start.y, offset.x, offset.y);
 		start = offset;
 	}
 
 	function endDrag() {
 		start = null;
 	}
-}
-
-function drawLine(startX, startY, endX, endY) {
-	paper.path("M" + startX + "," + startY + "L" + endX + "," + endY);
 }
 
 }());
