@@ -12,9 +12,9 @@
 	var versionChecker = require("./build/util/version_checker.js");
 	var path = require("path");
 
-	var NODE_VERSION = "v0.10.15";
+	var NODE_VERSION = "v0.10.16";
 	var SUPPORTED_BROWSERS = [
-		"Firefox 22.0 (Linux)"
+		"Firefox 23.0 (Linux)"
 	];
 
 	var GENERATED_DIR = "generated";
