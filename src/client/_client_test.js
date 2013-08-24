@@ -8,14 +8,12 @@ describe("Drawing area", function() {
 	var drawingArea;
 	var documentBody;
 	var svgCanvas;
-	var paper;
 
 	beforeEach(function() {
 		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		documentBody = new wwp.HtmlElement($(document.body));
 		documentBody.append(drawingArea);
 		svgCanvas = wwp.initializeDrawingArea(drawingArea);
-		paper = svgCanvas._paper;
 	});
 
 	afterEach( function() {
@@ -39,8 +37,8 @@ describe("Drawing area", function() {
 	});
 
 	it("should have same dimensions as its enclosing div", function() {
-		expect(paper.height).to.be(123);
-		expect(paper.width).to.be(321);
+		expect(svgCanvas.height()).to.be(123);
+		expect(svgCanvas.width()).to.be(321);
 	});
 
 	describe("line drawing", function() {

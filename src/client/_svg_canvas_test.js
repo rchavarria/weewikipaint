@@ -9,7 +9,7 @@ describe("Svg Canvas", function() {
 	var svgCanvas;
 
 	beforeEach(function() {
-		div = wwp.HtmlElement.fromHTML("<div></div>");
+		div = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px;'></div>");
 		var documentBody = new wwp.HtmlElement($(document.body));
 		documentBody.append(div);
 
@@ -18,6 +18,11 @@ describe("Svg Canvas", function() {
 
 	afterEach(function() {
 		div.remove();
+	});
+
+	it("returns height and width", function() {
+		expect(svgCanvas.height()).to.be(123);
+		expect(svgCanvas.width()).to.be(321);
 	});
 
 	it("returns zero line segments", function() {
