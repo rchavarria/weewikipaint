@@ -20,7 +20,7 @@ SvgCanvas.prototype.lineSegments = function() {
 		result.push(path);
 	});
 	return result;
-}
+};
 
 function pathFor(element) {
 	if(Raphael.svg) return vmlPathFor(element);
