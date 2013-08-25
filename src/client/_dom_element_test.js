@@ -33,6 +33,11 @@ describe("DOM Element", function() {
 			expect(domElement.element.children().length).to.be(0);
 		});
 
+		it("converts to DOM element", function() {
+			var internalElement = domElement.toDomElement();
+			expect(internalElement.tagName).to.equal("DIV");
+		});
+
 		function testEvent(onEvent, performEvent) {
 			var eventOffset = null;
 			onEvent.call(domElement, function(offset, event) {

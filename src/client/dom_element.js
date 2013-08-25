@@ -21,6 +21,10 @@ HtmlElement.prototype.remove = function() {
 	this.element.remove();
 };
 
+HtmlElement.prototype.toDomElement = function() {
+	return this.element[0];
+};
+
 HtmlElement.prototype.mouseMove = function(relativeX, relativeY) {
 	mouseEvent(this, "mousemove", relativeX, relativeY);
 };
