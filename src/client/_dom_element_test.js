@@ -38,6 +38,15 @@ describe("DOM Element", function() {
 			expect(internalElement.tagName).to.equal("DIV");
 		});
 
+		it("appends to body", function() {
+			var body = new wwp.HtmlElement($(document.body));
+			var childrenBeforeAppend = body.element.children().length;
+			domElement.appendToBody();
+			var childrenAfterAppend = body.element.children().length;
+
+			expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
+		});
+
 		function testEvent(onEvent, performEvent) {
 			var eventOffset = null;
 			onEvent.call(domElement, function(offset, event) {

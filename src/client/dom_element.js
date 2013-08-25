@@ -25,6 +25,10 @@ HtmlElement.prototype.toDomElement = function() {
 	return this.element[0];
 };
 
+HtmlElement.prototype.appendToBody = function() {
+	$(document.body).append(this.element);
+};
+
 HtmlElement.prototype.mouseMove = function(relativeX, relativeY) {
 	mouseEvent(this, "mousemove", relativeX, relativeY);
 };
