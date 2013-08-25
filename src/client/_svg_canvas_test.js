@@ -10,9 +10,7 @@ describe("Svg Canvas", function() {
 
 	beforeEach(function() {
 		div = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px;'></div>");
-		var documentBody = new wwp.HtmlElement($(document.body));
-		documentBody.append(div);
-
+		div.appendSelfToBody();
 		svgCanvas = new wwp.SvgCanvas(div);
 	});
 

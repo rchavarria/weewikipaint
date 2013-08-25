@@ -25,7 +25,7 @@ HtmlElement.prototype.toDomElement = function() {
 	return this.element[0];
 };
 
-HtmlElement.prototype.appendToBody = function() {
+HtmlElement.prototype.appendSelfToBody = function() {
 	$(document.body).append(this.element);
 };
 

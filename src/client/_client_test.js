@@ -10,9 +10,10 @@ describe("Drawing area", function() {
 	var svgCanvas;
 
 	beforeEach(function() {
-		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		documentBody = new wwp.HtmlElement($(document.body));
-		documentBody.append(drawingArea);
+		
+		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
+		drawingArea.appendSelfToBody();
 		svgCanvas = wwp.initializeDrawingArea(drawingArea);
 	});
 

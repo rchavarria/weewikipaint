@@ -41,7 +41,7 @@ describe("DOM Element", function() {
 		it("appends to body", function() {
 			var body = new wwp.HtmlElement($(document.body));
 			var childrenBeforeAppend = body.element.children().length;
-			domElement.appendToBody();
+			domElement.appendSelfToBody();
 			var childrenAfterAppend = body.element.children().length;
 
 			expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
