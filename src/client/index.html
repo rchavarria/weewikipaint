@@ -177,7 +177,9 @@
 
 <script type="text/javascript">
     $(function() {
-        wwp.initializeDrawingArea(new wwp.HtmlElement($("#drawingArea")));
+        // a global object 'wwp.drawingAreaCanvas' to be able to access Raphael from smoke tests
+        //as '_phantomjs.js'
+        wwp.drawingAreaCanvas = wwp.initializeDrawingArea(new wwp.HtmlElement($("#drawingArea")));
     });
 </script>
 
