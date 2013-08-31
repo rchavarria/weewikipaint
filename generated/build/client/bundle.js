@@ -235,6 +235,7 @@ function vmlPathFor(element) {
 	return [groups[1], groups[2], groups[3], groups[4]];
 }
 
+module.exports = SvgCanvas;
 
 }());
 

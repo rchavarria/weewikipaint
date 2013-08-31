@@ -196,6 +196,7 @@
 	function clientGlobals() {
 		return {
 			wwp: true,
+			module: false,
 
 			describe: false,
 			it: false,
