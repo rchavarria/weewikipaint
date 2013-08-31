@@ -6,12 +6,14 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
+var SvgCanvas = require("./svg_canvas.js");
+
 var drawingArea;
 var svgCanvas;
 
 wwp.initializeDrawingArea = function(domElement) {
 	drawingArea = domElement;
-	svgCanvas = new wwp.SvgCanvas(domElement);
+	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
 	return svgCanvas;
@@ -49,7 +51,7 @@ function handleDragEvents() {
 
 }());
 
-},{}],2:[function(require,module,exports){
+},{"./svg_canvas.js":3}],2:[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
 window.wwp = window.wwp || {};
@@ -192,12 +194,10 @@ function mouseStart(self, callback) {
 },{}],3:[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
-window.wwp = window.wwp || {};
-
 (function () {
 "use strict";
 
-var SvgCanvas = wwp.SvgCanvas = function SvgCanvas(htmlElement) {
+var SvgCanvas = function SvgCanvas(htmlElement) {
 	this._paper = new Raphael(htmlElement.toDomElement());
 };
 

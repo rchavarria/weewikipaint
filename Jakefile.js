@@ -67,7 +67,7 @@
 	}, {async: true});
 
 	desc("Test client code");
-	task("testClient", function() {
+	task("testClient", ["build"], function() {
 		testacular.runTests(SUPPORTED_BROWSERS, complete, fail);
 	}, {async: true});
 
@@ -196,8 +196,12 @@
 	function clientGlobals() {
 		return {
 			wwp: true,
-			module: false,
 
+			// Browserify
+			module: false,
+			require: false,
+
+			// Mocha / expect.js
 			describe: false,
 			it: false,
 			expect: false,

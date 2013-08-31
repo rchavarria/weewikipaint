@@ -5,12 +5,14 @@ window.wwp = window.wwp || {};
 (function () {
 "use strict";
 
+var SvgCanvas = require("./svg_canvas.js");
+
 var drawingArea;
 var svgCanvas;
 
 wwp.initializeDrawingArea = function(domElement) {
 	drawingArea = domElement;
-	svgCanvas = new wwp.SvgCanvas(domElement);
+	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
 	return svgCanvas;
