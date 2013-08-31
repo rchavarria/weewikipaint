@@ -1,7 +1,7 @@
 (function() {
 	"use strict";
 
-	var HOME_DIR = "src/client";
+	var HOME_DIR = "./generated/build/client";
 
 	var server = require("./server.js");
 

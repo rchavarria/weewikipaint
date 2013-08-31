@@ -6,8 +6,10 @@
 
 	if (!process.env.loose) console.log("For more forgiving test settings, use 'loose=true'");
 
-	var browserify = require("browserify");
+	var shell = require("shelljs");
 	var fs = require("fs");
+
+	var browserify = require("browserify");
 	var lint = require("./build/util/lint_runner.js");
 	var nodeunit = require("./build/util/nodeunit_runner.js");
 	var testacular = require("./build/util/testacular_runner.js");
@@ -22,9 +24,11 @@
 	var GENERATED_DIR = "generated";
 	var TEMP_TESTFILE_DIR = GENERATED_DIR + "/test";
 	var BUILD_DIR = GENERATED_DIR + "/build";
+	var BUILD_CLIENT_DIR = BUILD_DIR + "/client";
 
 	directory(TEMP_TESTFILE_DIR);
 	directory(BUILD_DIR);
+	directory(BUILD_CLIENT_DIR);
 
 	desc("Delete all generated files");
 	task("clean", [], function() {
@@ -68,15 +72,21 @@
 	}, {async: true});
 
 	desc("End-to-end smoke tests");
-	task("testSmoke", ["browserify"], function() {
+	task("testSmoke", ["build"], function() {
 		nodeunit.runTests(smokeTestFiles(), complete, fail);
 	}, {async: true});
 
-	desc("Browserify");
-	task("browserify", [BUILD_DIR], function() {
-		var b = browserify();
-		b.add("./src/client/client.js");
-		b.bundle().pipe(fs.createWriteStream(BUILD_DIR + "/bundle.js"));
+	desc("Bundle and build code");
+	task("build", [BUILD_CLIENT_DIR], function() {
+		shell.rm("-rf", BUILD_CLIENT_DIR + "/*");
+		shell.cp("-R", ["./src/client/*.html", "./src/client/vendor"], BUILD_CLIENT_DIR);
+
+		var b = browserify([
+			"./src/client/client.js",
+			"./src/client/dom_element.js",
+			"./src/client/svg_canvas.js"
+			]);
+		b.bundle().pipe(fs.createWriteStream(BUILD_CLIENT_DIR + "/bundle.js"));
 	});
 
 	desc("Deploy to Heroku");
