@@ -6,6 +6,7 @@
 
 	if (!process.env.loose) console.log("For more forgiving test settings, use 'loose=true'");
 
+	var browserify = require("browserify");
 	var lint = require("./build/util/lint_runner.js");
 	var nodeunit = require("./build/util/nodeunit_runner.js");
 	var testacular = require("./build/util/testacular_runner.js");
@@ -67,6 +68,13 @@
 	task("testSmoke", function() {
 		nodeunit.runTests(smokeTestFiles(), complete, fail);
 	}, {async: true});
+
+	desc("Browserify");
+	task("browserify", function() {
+		var b = browserify();
+		b.add("./src/client/client.js");
+		b.bundle().pipe(process.stdout);
+	});
 
 	desc("Deploy to Heroku");
 	task("deploy", ["default"], function() {
