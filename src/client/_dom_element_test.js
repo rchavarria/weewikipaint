@@ -3,13 +3,15 @@
 (function () {
 "use strict";
 
+var HtmlElement = require("./dom_element.js");
+
 describe("DOM Element", function() {
 
 	describe("event handlers", function() {
 		var domElement;
 
 		beforeEach(function() {
-			domElement = wwp.HtmlElement.fromHTML("<div></div>");
+			domElement = HtmlElement.fromHTML("<div></div>");
 		});
 
 		it("handles mouse events", function() {
@@ -21,12 +23,12 @@ describe("DOM Element", function() {
 
 		it("appends elements", function() {
 			expect(domElement.element.children().length).to.be(0);
-			domElement.append(wwp.HtmlElement.fromHTML("<div></div>"));
+			domElement.append(HtmlElement.fromHTML("<div></div>"));
 			expect(domElement.element.children().length).to.be(1);
 		});
 
 		it("removes elements", function() {
-			var elementToAppend = wwp.HtmlElement.fromHTML("<div></div>");
+			var elementToAppend = HtmlElement.fromHTML("<div></div>");
 			domElement.append(elementToAppend);
 			expect(domElement.element.children().length).to.be(1);
 			elementToAppend.remove();
@@ -39,7 +41,7 @@ describe("DOM Element", function() {
 		});
 
 		it("appends to body", function() {
-			var body = new wwp.HtmlElement($(document.body));
+			var body = new HtmlElement($(document.body));
 			var childrenBeforeAppend = body.element.children().length;
 			domElement.appendSelfToBody();
 			var childrenAfterAppend = body.element.children().length;

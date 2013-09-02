@@ -10,7 +10,7 @@ var SvgCanvas = require("./svg_canvas.js");
 var drawingArea;
 var svgCanvas;
 
-wwp.initializeDrawingArea = function(domElement) {
+exports.initializeDrawingArea = function(domElement) {
 	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();

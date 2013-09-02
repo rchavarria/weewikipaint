@@ -67,24 +67,29 @@
 	}, {async: true});
 
 	desc("Test client code");
-	task("testClient", ["build"], function() {
+	task("testClient", function() {
 		testacular.runTests(SUPPORTED_BROWSERS, complete, fail);
 	}, {async: true});
 
 	desc("End-to-end smoke tests");
-	task("testSmoke", ["build"], function() {
+	task("testSmoke", function() {
 		nodeunit.runTests(smokeTestFiles(), complete, fail);
 	}, {async: true});
 
 	desc("Bundle and build code");
 	task("build", [BUILD_CLIENT_DIR], function() {
+		console.log("Bundling with browserify");
+
 		shell.rm("-rf", BUILD_CLIENT_DIR + "/*");
 		shell.cp("-R", ["./src/client/*.html", "./src/client/vendor"], BUILD_CLIENT_DIR);
 
 		var b = browserify([
 			"./src/client/client.js",
 			"./src/client/dom_element.js",
-			"./src/client/svg_canvas.js"
+			"./src/client/svg_canvas.js",
+			"./src/client/_client_test.js",
+			"./src/client/_dom_element_test.js",
+			"./src/client/_svg_canvas_test.js"
 			]);
 		b.bundle().pipe(fs.createWriteStream(BUILD_CLIENT_DIR + "/bundle.js"));
 	});
@@ -200,8 +205,10 @@
 			// Browserify
 			module: false,
 			require: false,
+			exports: false,
 
 			// Mocha / expect.js
+			mocha: false,
 			describe: false,
 			it: false,
 			expect: false,

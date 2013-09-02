@@ -3,6 +3,11 @@
 (function () {
 "use strict";
 
+var client = require("./client.js");
+var HtmlElement = require("./dom_element.js");
+
+mocha.setup( {ignoreLeaks: true} );
+
 describe("Drawing area", function() {
 
 	var drawingArea;
@@ -10,11 +15,11 @@ describe("Drawing area", function() {
 	var svgCanvas;
 
 	beforeEach(function() {
-		documentBody = new wwp.HtmlElement($(document.body));
+		documentBody = new HtmlElement($(document.body));
 		
-		drawingArea = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
+		drawingArea = HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		drawingArea.appendSelfToBody();
-		svgCanvas = wwp.initializeDrawingArea(drawingArea);
+		svgCanvas = client.initializeDrawingArea(drawingArea);
 	});
 
 	afterEach( function() {

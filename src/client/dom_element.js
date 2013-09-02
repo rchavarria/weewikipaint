@@ -1,16 +1,14 @@
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
-window.wwp = window.wwp || {};
-
 (function () {
 "use strict";
 
-var HtmlElement = wwp.HtmlElement = function HtmlElement(jQueryElement) {
+var HtmlElement = module.exports = function HtmlElement(jQueryElement) {
 	this.element = jQueryElement;
 };
 
 HtmlElement.fromHTML = function(html) {
-	return new wwp.HtmlElement($(html));
+	return new HtmlElement($(html));
 };
 
 HtmlElement.prototype.append = function(domElementToAppend) {

@@ -3,15 +3,18 @@
 (function () {
 "use strict";
 
+var SvgCanvas = require("./svg_canvas.js");
+var HtmlElement = require("./dom_element.js");
+
 describe("Svg Canvas", function() {
 
 	var div;
 	var svgCanvas;
 
 	beforeEach(function() {
-		div = wwp.HtmlElement.fromHTML("<div style='width: 321px; height: 123px;'></div>");
+		div = HtmlElement.fromHTML("<div style='width: 321px; height: 123px;'></div>");
 		div.appendSelfToBody();
-		svgCanvas = new wwp.SvgCanvas(div);
+		svgCanvas = new SvgCanvas(div);
 	});
 
 	afterEach(function() {
