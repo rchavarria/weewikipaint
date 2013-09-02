@@ -28,12 +28,15 @@
 
     function inBrowser() {
         try {
-            var drawingArea = new wwp.HtmlElement($("#drawingArea"));
+            var client = require("./client.js");
+            var HtmlElement = require("./dom_element.js");
+
+            var drawingArea = new HtmlElement($("#drawingArea"));
             drawingArea.mouseDown(10, 20);
             drawingArea.mouseMove(50, 60);
             drawingArea.mouseUp(50, 60);
 
-            var actual = JSON.stringify(wwp.drawingAreaCanvas.lineSegments());
+            var actual = JSON.stringify(client.drawingAreaCanvas.lineSegments());
             var expected = JSON.stringify([[ "10", "20", "50", "60" ]]);
 
             if (actual !== expected) return "lines drawn expected " + expected + " but was " + actual;

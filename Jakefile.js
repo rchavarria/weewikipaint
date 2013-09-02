@@ -83,18 +83,29 @@
 		shell.rm("-rf", BUILD_CLIENT_DIR + "/*");
 		shell.cp("-R", ["./src/client/*.html", "./src/client/vendor"], BUILD_CLIENT_DIR);
 
+		// browserify production code
 		var b = browserify([
 			"./src/client/client.js",
-			"./src/client/dom_element.js",
-			"./src/client/svg_canvas.js",
-			"./src/client/_client_test.js",
-			"./src/client/_dom_element_test.js",
-			"./src/client/_svg_canvas_test.js"
+			"./src/client/dom_element.js"
+			// "./src/client/svg_canvas.js",
 			]);
 		b.bundle({}, function(err, bundle) {
 			if(err) fail(err);
 			fs.writeFileSync(BUILD_CLIENT_DIR + "/bundle.js", bundle);
-			complete();
+
+			// browserify test code
+			b.require("./src/client/client.js", {expose: "./client.js"} );
+			b.require("./src/client/dom_element.js", {expose: "./dom_element.js"} );
+			b = browserify([
+				"./src/client/_client_test.js",
+				"./src/client/_dom_element_test.js",
+				"./src/client/_svg_canvas_test.js"
+				]);
+			b.bundle({}, function(err, bundle) {
+				if(err) fail(err);
+				fs.writeFileSync(BUILD_CLIENT_DIR + "/_test_bundle.js", bundle);
+				complete();
+			});
 		});
 	}, {async: true});
 
