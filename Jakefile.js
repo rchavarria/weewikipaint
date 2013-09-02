@@ -67,12 +67,12 @@
 	}, {async: true});
 
 	desc("Test client code");
-	task("testClient", function() {
+	task("testClient", ["build"], function() {
 		testacular.runTests(SUPPORTED_BROWSERS, complete, fail);
 	}, {async: true});
 
 	desc("End-to-end smoke tests");
-	task("testSmoke", function() {
+	task("testSmoke", ["build"], function() {
 		nodeunit.runTests(smokeTestFiles(), complete, fail);
 	}, {async: true});
 
@@ -91,8 +91,12 @@
 			"./src/client/_dom_element_test.js",
 			"./src/client/_svg_canvas_test.js"
 			]);
-		b.bundle().pipe(fs.createWriteStream(BUILD_CLIENT_DIR + "/bundle.js"));
-	});
+		b.bundle({}, function(err, bundle) {
+			if(err) fail(err);
+			fs.writeFileSync(BUILD_CLIENT_DIR + "/bundle.js", bundle);
+			complete();
+		});
+	}, {async: true});
 
 	desc("Deploy to Heroku");
 	task("deploy", ["default"], function() {
