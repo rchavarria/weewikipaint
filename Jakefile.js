@@ -45,6 +45,11 @@
 		testacular.serve("build/karma.conf.js", complete, fail);
 	}, {async: true});
 
+	desc("Run server for manual testing");
+	task("run", ["build"], function() {
+		console.log("run 'foreman start'");
+	});
+
 	desc("Lint everything");
 	task("lint", ["lintNode", "lintClient"]);
 
