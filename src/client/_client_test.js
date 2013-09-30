@@ -113,17 +113,22 @@ describe("Drawing area", function() {
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 		});
 
-		it("stops drawing when mouse leaves drawing area", function() {
+		it("continues drawing even if mouse leaves drawing area", function() {
 			// ask
 			drawingArea.mouseDown(20, 30);
 			drawingArea.mouseMove(50, 60);
 			drawingArea.mouseLeave(350, 70);
+
 			documentBody.mouseMove(350, 70);
 			drawingArea.mouseMove(70, 90);
-			drawingArea.mouseUp(71, 91);
+			drawingArea.mouseUp(70, 90);
 
 			// assert
-			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
+			expect(lineSegments()).to.eql([
+				[20, 30, 50, 60],
+				[50, 60, 350, 70],
+				[350, 70, 70, 90]
+			]);
 		});
 
 		it("does not draw a line if drag starts outside drawing aread", function() {
