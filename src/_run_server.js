@@ -9,8 +9,7 @@
 	var procfile = require("procfile");
 
 	exports.runProgrammatically = function(callback) {
-		var commandLine = parseProcFile();
-		var serverProcess = child_process.spawn(commandLine.command, commandLine.options, {stdio: ["pipe", "pipe", process.stderr]});
+		var serverProcess = run(["pipe", "pipe", process.stderr]);
 		serverProcess.stdout.setEncoding("utf8");
 		serverProcess.stdout.on("data", function(chunk) {
 			if (chunk.trim().indexOf("Server started") !== -1) callback(serverProcess);
@@ -18,9 +17,13 @@
 	};
 
 	exports.runInteractively = function() {
-		var commandLine = parseProcFile();
-		return child_process.spawn(commandLine.command, commandLine.options, {stdio: "inherit"});
+		return run("inherit");
 	};
+
+	function run(stdioOptions) {
+		var commandLine = parseProcFile();
+		return child_process.spawn(commandLine.command, commandLine.options, {stdio: stdioOptions});
+	}
 
 	function parseProcFile() {
 		var fileData = fs.readFileSync("Procfile", "utf8");
