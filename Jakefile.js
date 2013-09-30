@@ -50,7 +50,7 @@
 	task("run", ["build"], function() {
 		console.log("Starting the server");
 
-		runServer(function(callback) {
+		runServer.runInteractively(function(callback) {
 			console.log("...started");
 		});
 	}, {async: true});
