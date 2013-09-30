@@ -50,9 +50,7 @@
 	task("run", ["build"], function() {
 		console.log("Starting the server");
 
-		runServer.runInteractively(function(callback) {
-			console.log("...started");
-		});
+		var serverProcess = runServer.runInteractively();
 	}, {async: true});
 
 	desc("Lint everything");

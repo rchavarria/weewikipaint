@@ -17,13 +17,9 @@
 		});
 	};
 
-	exports.runInteractively = function(callback) {
+	exports.runInteractively = function() {
 		var commandLine = parseProcFile();
-		var serverProcess = child_process.spawn(commandLine.command, commandLine.options, {stdio: ["pipe", "pipe", process.stderr]});
-		serverProcess.stdout.setEncoding("utf8");
-		serverProcess.stdout.on("data", function(chunk) {
-			if (chunk.trim().indexOf("Server started") !== -1) callback(serverProcess);
-		});
+		return child_process.spawn(commandLine.command, commandLine.options, {stdio: "inherit"});
 	};
 
 	function parseProcFile() {
