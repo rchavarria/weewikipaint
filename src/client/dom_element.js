@@ -34,20 +34,16 @@ HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 
 function mouseEventFn(event) {
 	return function(relativeX, relativeY) {
-		mouseEvent(this, event, relativeX, relativeY);
+		var jqElement = this.element;
+		var offset = pageOffset(this, relativeX, relativeY);
+
+		var eventData = new jQuery.Event();
+		eventData.pageX = offset.x;
+		eventData.pageY = offset.y;
+		eventData.type = event;
+
+		jqElement.trigger(eventData);
 	};
-}
-
-function mouseEvent(self, event, relativeX, relativeY) {
-	var element = self.element;
-	var offset = pageOffset(self, relativeX, relativeY);
-
-	var eventData = new jQuery.Event();
-	eventData.pageX = offset.x;
-	eventData.pageY = offset.y;
-	eventData.type = event;
-
-	element.trigger(eventData);
 }
 
 HtmlElement.prototype.onMouseDown = function(callback) {
