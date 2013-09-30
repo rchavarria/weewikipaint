@@ -15,6 +15,7 @@
 	var testacular = require("./build/util/testacular_runner.js");
 	var versionChecker = require("./build/util/version_checker.js");
 	var path = require("path");
+	var runServer = require("./src/_run_server.js");
 
 	var NODE_VERSION = "v0.10.16";
 	var SUPPORTED_BROWSERS = [
@@ -47,7 +48,11 @@
 
 	desc("Run server for manual testing");
 	task("run", ["build"], function() {
-		console.log("run 'foreman start'");
+		console.log("Starting the server");
+
+		runServer(function(callback) {
+			console.log("...started");
+		});
 	});
 
 	desc("Lint everything");
