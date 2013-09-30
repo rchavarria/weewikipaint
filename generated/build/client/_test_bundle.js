@@ -114,19 +114,25 @@ describe("Drawing area", function() {
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 		});
 
-		it("stops drawing when mouse leaves drawing area", function() {
+/*
+		it("continues drawing even if mouse leaves drawing area", function() {
 			// ask
 			drawingArea.mouseDown(20, 30);
 			drawingArea.mouseMove(50, 60);
 			drawingArea.mouseLeave(350, 70);
+
 			documentBody.mouseMove(350, 70);
 			drawingArea.mouseMove(70, 90);
-			drawingArea.mouseUp(71, 91);
+			drawingArea.mouseUp(70, 90);
 
 			// assert
-			expect(lineSegments()).to.eql([ [20, 30, 50, 60] ]);
+			expect(lineSegments()).to.eql([
+				[20, 30, 50, 60],
+				[50, 60, 350, 70],
+				[350, 70, 70, 90]
+			]);
 		});
-
+*/
 		it("does not draw a line if drag starts outside drawing aread", function() {
 			// ask
 			documentBody.mouseDown(10, 124); // outside y coordinate
@@ -356,7 +362,7 @@ function handleDragEvents() {
 	drawingArea.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	drawingArea.onMouseLeave(endDrag);
+	// drawingArea.onMouseLeave(endDrag);
 	drawingArea.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
 
@@ -409,21 +415,16 @@ HtmlElement.prototype.appendSelfToBody = function() {
 	$(document.body).append(this.element);
 };
 
-HtmlElement.prototype.mouseMove = function(relativeX, relativeY) {
-	mouseEvent(this, "mousemove", relativeX, relativeY);
-};
+HtmlElement.prototype.mouseMove = mouseEventFn("mousemove");
+HtmlElement.prototype.mouseDown = mouseEventFn("mousedown");
+HtmlElement.prototype.mouseLeave = mouseEventFn("mouseleave");
+HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 
-HtmlElement.prototype.mouseDown = function(relativeX, relativeY) {
-	mouseEvent(this, "mousedown", relativeX, relativeY);
-};
-
-HtmlElement.prototype.mouseLeave = function(relativeX, relativeY) {
-	mouseEvent(this, "mouseleave", relativeX, relativeY);
-};
-
-HtmlElement.prototype.mouseUp = function(relativeX, relativeY) {
-	mouseEvent(this, "mouseup", relativeX, relativeY);
-};
+function mouseEventFn(event) {
+	return function(relativeX, relativeY) {
+		mouseEvent(this, event, relativeX, relativeY);
+	};
+}
 
 function mouseEvent(self, event, relativeX, relativeY) {
 	var element = self.element;

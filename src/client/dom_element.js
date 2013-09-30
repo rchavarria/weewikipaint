@@ -27,21 +27,16 @@ HtmlElement.prototype.appendSelfToBody = function() {
 	$(document.body).append(this.element);
 };
 
-HtmlElement.prototype.mouseMove = function(relativeX, relativeY) {
-	mouseEvent(this, "mousemove", relativeX, relativeY);
-};
+HtmlElement.prototype.mouseMove = mouseEventFn("mousemove");
+HtmlElement.prototype.mouseDown = mouseEventFn("mousedown");
+HtmlElement.prototype.mouseLeave = mouseEventFn("mouseleave");
+HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 
-HtmlElement.prototype.mouseDown = function(relativeX, relativeY) {
-	mouseEvent(this, "mousedown", relativeX, relativeY);
-};
-
-HtmlElement.prototype.mouseLeave = function(relativeX, relativeY) {
-	mouseEvent(this, "mouseleave", relativeX, relativeY);
-};
-
-HtmlElement.prototype.mouseUp = function(relativeX, relativeY) {
-	mouseEvent(this, "mouseup", relativeX, relativeY);
-};
+function mouseEventFn(event) {
+	return function(relativeX, relativeY) {
+		mouseEvent(this, event, relativeX, relativeY);
+	};
+}
 
 function mouseEvent(self, event, relativeX, relativeY) {
 	var element = self.element;
