@@ -53,7 +53,7 @@
 		runServer(function(callback) {
 			console.log("...started");
 		});
-	});
+	}, {async: true});
 
 	desc("Lint everything");
 	task("lint", ["lintNode", "lintClient"]);
@@ -84,7 +84,7 @@
 	desc("End-to-end smoke tests");
 	task("testSmoke", ["build"], function() {
 		nodeunit.runTests(smokeTestFiles(), complete, fail);
-	}, {async: true});
+	});
 
 	desc("Bundle and build code");
 	task("build", [BUILD_CLIENT_DIR], function() {

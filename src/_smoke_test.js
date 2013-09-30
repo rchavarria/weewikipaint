@@ -11,7 +11,7 @@
 	var serverProcess;
 
 	exports.setUp = function(done) {
-		runServer(function(process) {
+		runServer.runProgrammatically(function(process) {
 			serverProcess = process;
 			done();
 		});
