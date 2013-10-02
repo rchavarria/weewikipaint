@@ -455,33 +455,19 @@ function sendTouchEventFn(event) {
 	};
 }
 
-HtmlElement.prototype.onMouseDown = function(callback) {
-	this.element.mousedown(mouseStart(this, callback));
-};
+HtmlElement.prototype.onMouseDown = onMouseEventFn("mousedown");
+HtmlElement.prototype.onMouseMove = onMouseEventFn("mousemove");
+HtmlElement.prototype.onMouseLeave = onMouseEventFn("mouseleave");
+HtmlElement.prototype.onMouseUp = onMouseEventFn("mouseup");
+HtmlElement.prototype.onTouchStart = onMouseEventFn("touchstart");
+HtmlElement.prototype.onTouchMove = onMouseEventFn("touchmove");
+HtmlElement.prototype.onTouchEnd = onMouseEventFn("touchend");
 
-HtmlElement.prototype.onMouseMove = function(callback) {
-	this.element.mousemove(mouseStart(this, callback));
-};
-
-HtmlElement.prototype.onMouseLeave = function(callback) {
-	this.element.mouseleave(mouseStart(this, callback));
-};
-
-HtmlElement.prototype.onMouseUp = function(callback) {
-	this.element.mouseup(mouseStart(this, callback));
-};
-
-HtmlElement.prototype.onTouchStart = function(callback) {
-	this.element.on("touchstart", mouseStart(this, callback));
-};
-
-HtmlElement.prototype.onTouchMove = function(callback) {
-	this.element.on("touchmove", callback);
-};
-
-HtmlElement.prototype.onTouchEnd = function(callback) {
-	this.element.on("touchend", callback);
-};
+function onMouseEventFn(event) {
+	return function(callback) {
+		this.element.on(event, mouseStart(this, callback));
+	};
+}
 
 function relativeOffset(self, absX, absY) {
 	var position = self.element.offset();
@@ -556,5 +542,5 @@ module.exports = SvgCanvas;
 
 }());
 
-},{}]},{},[1,3,2])
+},{}]},{},[1,2,3])
 ;
