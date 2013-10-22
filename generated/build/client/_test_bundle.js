@@ -1,4 +1,6 @@
-;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./client.js":[function(require,module,exports){
+module.exports=require('eYKSv0');
+},{}],2:[function(require,module,exports){
 /* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael */
 
 (function () {
@@ -211,7 +213,7 @@ describe("Drawing area", function() {
 
 }());
 
-},{"./client.js":4,"./dom_element.js":5}],2:[function(require,module,exports){
+},{"./client.js":"eYKSv0","./dom_element.js":"Rkd7/B"}],3:[function(require,module,exports){
 /* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael, wwp */
 
 (function () {
@@ -279,7 +281,7 @@ describe("DOM Element", function() {
 
 }());
 
-},{"./dom_element.js":5}],3:[function(require,module,exports){
+},{"./dom_element.js":"Rkd7/B"}],4:[function(require,module,exports){
 /* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael, wwp */
 
 (function () {
@@ -332,7 +334,7 @@ describe("Svg Canvas", function() {
 
 }());
 
-},{"./dom_element.js":5,"./svg_canvas.js":6}],4:[function(require,module,exports){
+},{"./dom_element.js":"Rkd7/B","./svg_canvas.js":7}],"eYKSv0":[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
 window.wwp = window.wwp || {};
@@ -385,7 +387,7 @@ function handleDragEvents() {
 
 }());
 
-},{"./svg_canvas.js":6}],5:[function(require,module,exports){
+},{"./svg_canvas.js":7}],"Rkd7/B":[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
 (function () {
@@ -494,7 +496,7 @@ function mouseStart(self, callback) {
 
 }());
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
 (function () {
@@ -542,5 +544,5 @@ module.exports = SvgCanvas;
 
 }());
 
-},{}]},{},[1,2,3])
+},{}]},{},[3,4,2])
 ;

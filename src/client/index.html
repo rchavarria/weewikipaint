@@ -7,17 +7,16 @@
     <!-- Don't harsh my placeholder HTML, man. Design and me, well, we don't get along. Pistols at noon and stuff. -->
     <style type="text/css">
         /* Height hackery */
-
         html, body {
-            height: 100%;
+            height: 125%;
         }
 
         #container {
-            min-height: 100%;
+            min-height: 125%;
         }
 
         * html #container {
-            height: 100%;
+            height: 125%;
         }
 
         /* Page */
@@ -80,6 +79,11 @@
             max-width: 30em;
             padding-right: 2em;
             margin-top: 1em;
+        }
+
+        #drawingArea {
+            width: 400px;
+            margin: 0 auto;
         }
 
         footer {
@@ -159,16 +163,35 @@
             <h1>WeeWikiPaint</h1>
         </header>
         <section>
-            <h1>Coming Soon</h1>
-
-            <p>WeeWikiPaint is the web's premier <em>collaborative painting site</em>. Or at least, it could be. In the weeks to come, we'll be adding many new features. Check back soon!</p>
-
-            <p>You can watch this site get developed! This project is part of James Shore's <a href="http://www.letscodejavascript.com">Let's Code: Test-Driven Javascript</a> screencast, a series focused on rigorous, professional Javascript development. Come join the fun!</p>
-        </section>
-        <section>
             <h1>Draw Here:</h1>
 
             <div id="drawingArea" style='height: 300px; width: 500px; border: solid red 2px'></div>
+        </section>
+        <section>
+            <h1>Description</h1>
+
+            <p>WeeWikiPaint is the web's premier <em>collaborative painting site</em>. 
+                This project is part of James Shore's 
+                <a href="http://www.letscodejavascript.com">Let's Code: Test-Driven Javascript</a>
+                screencast, a series focused on rigorous, professional Javascript development.
+            </p>
+            <p>For this project, I've been developing in JavaScript programming language, using
+                NodeJS as the core platform, so JavaScript is in both server and client side, and
+                it's amazing.
+            </p>
+            <p>I'm using the following NodeJS modules and tools:</p>
+            <ul>
+                <li><strong>jake</strong>: a tool similar to the old and well-known <a href="https://www.gnu.org/software/make/">make</a>, but for JavaScript.</li>
+                <li>http-server: easy to guess, an http server.</li>
+                <li>shelljs: a portable (Windows/Linux/OS X) implementation of Unix shell commands on top of the Node.js API</li>
+                <li>nodeunit: provides easy async unit testing for node.js and the browser.</li>
+                <li>mocha: a simple, flexible, fun JavaScript test framework for node.js and the browser.</li>
+                <li>expect.js: BDD style assertions for node and the browser.</li>
+                <li>phantomjs: An NPM wrapper for PhantomJS, a headless WebKit browser scriptable with a JavaScript API.</li>
+                <li>karma: A simple tool that allows you to execute JavaScript code in multiple real browsers.</li>
+                <li>browserify: browserify will recursively analyze all the require() calls in your app in order to build a bundle you can serve up to the browser in a single <code>script</code> tag.</li>
+                <li>procfile: a module to parse Procfile, needed to deploy on heroku</li>
+            </ul>
         </section>
     </div>
 </div>
