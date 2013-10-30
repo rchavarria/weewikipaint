@@ -24,10 +24,9 @@ function handleDragEvents() {
 	drawingArea.onMouseDown(startDrag);
 	drawingArea.onTouchStart(startDrag);
 
-	drawingArea.onMouseMove(continueDrag);
+	documentBody.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	// drawingArea.onMouseLeave(endDrag);
 	drawingArea.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
 

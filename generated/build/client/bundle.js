@@ -213,5 +213,5 @@ module.exports = SvgCanvas;
 
 },{}],"./dom_element.js":[function(require,module,exports){
 module.exports=require('Rkd7/B');
-},{}]},{},["Rkd7/B","eYKSv0"])
+},{}]},{},["eYKSv0","Rkd7/B"])
 ;
