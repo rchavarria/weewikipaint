@@ -25,6 +25,7 @@ describe("Drawing area", function() {
 
 	afterEach( function() {
 		drawingArea.remove();
+		client.drawingAreaHasBeenRemovedFromDom();
 	});
 
 	it("should be initialized with Raphael", function() {
@@ -114,7 +115,6 @@ describe("Drawing area", function() {
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 		});
 
-/*
 		it("continues drawing even if mouse leaves drawing area", function() {
 			// ask
 			drawingArea.mouseDown(20, 30);
@@ -132,7 +132,7 @@ describe("Drawing area", function() {
 				[350, 70, 70, 90]
 			]);
 		});
-*/
+
 		it("does not draw a line if drag starts outside drawing aread", function() {
 			// ask
 			documentBody.mouseDown(10, 124); // outside y coordinate
@@ -361,16 +361,27 @@ window.wwp = window.wwp || {};
 "use strict";
 
 var SvgCanvas = require("./svg_canvas.js");
+var HtmlElement = require("./dom_element.js");
 
 var drawingArea;
 var svgCanvas;
+var documentBody;
 
 exports.initializeDrawingArea = function(domElement) {
+	if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
+
+	drawingArea = domElement;
+	documentBody = new HtmlElement($(document.body));
+
 	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
 	return svgCanvas;
+};
+
+exports.drawingAreaHasBeenRemovedFromDom = function() {
+	svgCanvas = null;
 };
 
 function handleDragEvents() {
@@ -379,10 +390,9 @@ function handleDragEvents() {
 	drawingArea.onMouseDown(startDrag);
 	drawingArea.onTouchStart(startDrag);
 
-	drawingArea.onMouseMove(continueDrag);
+	documentBody.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	// drawingArea.onMouseLeave(endDrag);
 	drawingArea.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
 
@@ -406,7 +416,7 @@ function handleDragEvents() {
 
 }());
 
-},{"./svg_canvas.js":6}],5:[function(require,module,exports){
+},{"./dom_element.js":5,"./svg_canvas.js":6}],5:[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
 
 (function () {

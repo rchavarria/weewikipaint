@@ -24,6 +24,7 @@ describe("Drawing area", function() {
 
 	afterEach( function() {
 		drawingArea.remove();
+		client.drawingAreaHasBeenRemovedFromDom();
 	});
 
 	it("should be initialized with Raphael", function() {
@@ -113,7 +114,6 @@ describe("Drawing area", function() {
 			expect(lineSegments()).to.eql([ [20, 30, 50, 60], [50, 60, 40, 20], [20, 20, 20, 40], [20, 40, 1, 1] ]);
 		});
 
-/*
 		it("continues drawing even if mouse leaves drawing area", function() {
 			// ask
 			drawingArea.mouseDown(20, 30);
@@ -131,7 +131,7 @@ describe("Drawing area", function() {
 				[350, 70, 70, 90]
 			]);
 		});
-*/
+
 		it("does not draw a line if drag starts outside drawing aread", function() {
 			// ask
 			documentBody.mouseDown(10, 124); // outside y coordinate

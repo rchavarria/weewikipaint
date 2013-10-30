@@ -7,16 +7,27 @@ window.wwp = window.wwp || {};
 "use strict";
 
 var SvgCanvas = require("./svg_canvas.js");
+var HtmlElement = require("./dom_element.js");
 
 var drawingArea;
 var svgCanvas;
+var documentBody;
 
 exports.initializeDrawingArea = function(domElement) {
+	if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
+
+	drawingArea = domElement;
+	documentBody = new HtmlElement($(document.body));
+
 	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
 	return svgCanvas;
+};
+
+exports.drawingAreaHasBeenRemovedFromDom = function() {
+	svgCanvas = null;
 };
 
 function handleDragEvents() {
@@ -25,10 +36,9 @@ function handleDragEvents() {
 	drawingArea.onMouseDown(startDrag);
 	drawingArea.onTouchStart(startDrag);
 
-	drawingArea.onMouseMove(continueDrag);
+	documentBody.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	// drawingArea.onMouseLeave(endDrag);
 	drawingArea.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
 
@@ -52,7 +62,7 @@ function handleDragEvents() {
 
 }());
 
-},{"./svg_canvas.js":4}],"./client.js":[function(require,module,exports){
+},{"./dom_element.js":"Rkd7/B","./svg_canvas.js":4}],"./client.js":[function(require,module,exports){
 module.exports=require('eYKSv0');
 },{}],"Rkd7/B":[function(require,module,exports){
 /* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
