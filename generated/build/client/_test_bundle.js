@@ -1,5 +1,5 @@
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael */
+/* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael, window */
 
 (function () {
 "use strict";
@@ -201,7 +201,7 @@ describe("Drawing area", function() {
 	});
 
 	function browserSupportsTouchEvents() {
-		return (typeof Touch !== "undefined");
+		return (typeof Touch !== "undefined") && ('ontouchstart' in window);
 	}
 
 	function lineSegments() {
@@ -228,7 +228,7 @@ describe("DOM Element", function() {
 			domElement = HtmlElement.fromHTML("<div></div>");
 		});
 
-		it("handles mouse events", function() {
+		it("triggers mouse eventos relative to element and handles them relative to page", function() {
 			testEvent(domElement.onMouseDown, domElement.mouseDown);
 			testEvent(domElement.onMouseLeave, domElement.mouseLeave);
 			testEvent(domElement.onMouseMove, domElement.mouseMove);
@@ -255,12 +255,16 @@ describe("DOM Element", function() {
 		});
 
 		it("appends to body", function() {
-			var body = new HtmlElement($(document.body));
-			var childrenBeforeAppend = body.element.children().length;
-			domElement.appendSelfToBody();
-			var childrenAfterAppend = body.element.children().length;
+			try {
+				var body = new HtmlElement($(document.body));
+				var childrenBeforeAppend = body.element.children().length;
+				domElement.appendSelfToBody();
+				var childrenAfterAppend = body.element.children().length;
 
-			expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
+				expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
+			} finally {
+				domElement.remove();
+			}
 		});
 
 		it("converts page coordinates into relative element coordinates", function() {
@@ -273,13 +277,20 @@ describe("DOM Element", function() {
 		});
 
 		function testEvent(onEvent, performEvent) {
-			var eventOffset = null;
-			onEvent.call(domElement, function(offset, event) {
-				eventOffset = offset;
-			});
-			performEvent.call(domElement, 42, 13);
+			try {
+				domElement.appendSelfToBody();
 
-			expect(eventOffset).to.eql( {x: 42, y: 13} );
+				var eventPageOffset = null;
+				onEvent.call(domElement, function(pageOffset, event) {
+					eventPageOffset = pageOffset;
+				});
+				performEvent.call(domElement, 42, 13);
+
+				expect( domElement.relativeOffset(eventPageOffset) ).to.eql( {x: 42, y: 13} );
+
+			} finally {
+				domElement.remove();
+			}
 		}
 
 	});
@@ -496,9 +507,8 @@ function pageOffset(self, relativeX, relativeY) {
 
 function mouseStart(self, callback) {
 	return function(event) {
-		var e = { x: event.pageX, y: event.pageY };
-		var offset = self.relativeOffset(e);
-		callback(offset, event);
+		var pageOffset = { x: event.pageX, y: event.pageY };
+		callback(pageOffset, event);
 	};
 }
 

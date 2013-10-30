@@ -1,4 +1,4 @@
-/* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael */
+/* global describe, it, expect, dump, wwp, jQuery, $, beforeEach, afterEach, Raphael, window */
 
 (function () {
 "use strict";
@@ -200,7 +200,7 @@ describe("Drawing area", function() {
 	});
 
 	function browserSupportsTouchEvents() {
-		return (typeof Touch !== "undefined");
+		return (typeof Touch !== "undefined") && ('ontouchstart' in window);
 	}
 
 	function lineSegments() {

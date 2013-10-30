@@ -155,9 +155,8 @@ function pageOffset(self, relativeX, relativeY) {
 
 function mouseStart(self, callback) {
 	return function(event) {
-		var e = { x: event.pageX, y: event.pageY };
-		var offset = self.relativeOffset(e);
-		callback(offset, event);
+		var pageOffset = { x: event.pageX, y: event.pageY };
+		callback(pageOffset, event);
 	};
 }
 

@@ -14,7 +14,7 @@ describe("DOM Element", function() {
 			domElement = HtmlElement.fromHTML("<div></div>");
 		});
 
-		it("handles mouse events", function() {
+		it("triggers mouse eventos relative to element and handles them relative to page", function() {
 			testEvent(domElement.onMouseDown, domElement.mouseDown);
 			testEvent(domElement.onMouseLeave, domElement.mouseLeave);
 			testEvent(domElement.onMouseMove, domElement.mouseMove);
@@ -63,13 +63,20 @@ describe("DOM Element", function() {
 		});
 
 		function testEvent(onEvent, performEvent) {
-			var eventOffset = null;
-			onEvent.call(domElement, function(offset, event) {
-				eventOffset = offset;
-			});
-			performEvent.call(domElement, 42, 13);
+			try {
+				domElement.appendSelfToBody();
 
-			expect(eventOffset).to.eql( {x: 42, y: 13} );
+				var eventPageOffset = null;
+				onEvent.call(domElement, function(pageOffset, event) {
+					eventPageOffset = pageOffset;
+				});
+				performEvent.call(domElement, 42, 13);
+
+				expect( domElement.relativeOffset(eventPageOffset) ).to.eql( {x: 42, y: 13} );
+
+			} finally {
+				domElement.remove();
+			}
 		}
 
 	});

@@ -11,6 +11,7 @@ files = [
   MOCHA,
   MOCHA_ADAPTER,
   'node_modules/expect.js/expect.js',
+
   'generated/build/client/vendor/jquery-1.10.1.js',
   'generated/build/client/vendor/raphael-2.10.1.js',
   'generated/build/client/_test_bundle.js'
@@ -19,7 +20,7 @@ files = [
 
 // list of files to exclude
 exclude = [
-  
+
 ];
 
 
