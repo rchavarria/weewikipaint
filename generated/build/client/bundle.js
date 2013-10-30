@@ -137,13 +137,13 @@ function onMouseEventFn(event) {
 	};
 }
 
-function relativeOffset(self, absX, absY) {
-	var position = self.element.offset();
+HtmlElement.prototype.relativeOffset = function(pageOffset) {
+	var elementPageOffset = this.element.offset();
 	return {
-		x: absX - position.left,
-		y: absY - position.top
+		x: pageOffset.x - elementPageOffset.left,
+		y: pageOffset.y - elementPageOffset.top
 	};
-}
+};
 
 function pageOffset(self, relativeX, relativeY) {
 	var topLeftOfDrawingArea = self.element.offset();
@@ -155,7 +155,8 @@ function pageOffset(self, relativeX, relativeY) {
 
 function mouseStart(self, callback) {
 	return function(event) {
-		var offset = relativeOffset(self, event.pageX, event.pageY);
+		var e = { x: event.pageX, y: event.pageY };
+		var offset = self.relativeOffset(e);
 		callback(offset, event);
 	};
 }

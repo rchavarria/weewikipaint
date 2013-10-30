@@ -49,6 +49,11 @@ describe("DOM Element", function() {
 			expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
 		});
 
+		it("converts page coordinates into relative element coordinates", function() {
+			domElement.appendSelfToBody();
+			expect( domElement.relativeOffset( {x: 100, y: 100} ) ).to.eql( {x: 92, y: 92} );
+		});
+
 		function testEvent(onEvent, performEvent) {
 			var eventOffset = null;
 			onEvent.call(domElement, function(offset, event) {
