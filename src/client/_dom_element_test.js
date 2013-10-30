@@ -1,4 +1,4 @@
-/* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael, wwp */
+/* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael */
 
 (function () {
 "use strict";
@@ -41,17 +41,25 @@ describe("DOM Element", function() {
 		});
 
 		it("appends to body", function() {
-			var body = new HtmlElement($(document.body));
-			var childrenBeforeAppend = body.element.children().length;
-			domElement.appendSelfToBody();
-			var childrenAfterAppend = body.element.children().length;
+			try {
+				var body = new HtmlElement($(document.body));
+				var childrenBeforeAppend = body.element.children().length;
+				domElement.appendSelfToBody();
+				var childrenAfterAppend = body.element.children().length;
 
-			expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
+				expect(childrenAfterAppend).to.be(childrenBeforeAppend + 1);
+			} finally {
+				domElement.remove();
+			}
 		});
 
 		it("converts page coordinates into relative element coordinates", function() {
-			domElement.appendSelfToBody();
-			expect( domElement.relativeOffset( {x: 100, y: 100} ) ).to.eql( {x: 92, y: 92} );
+			try {
+				domElement.appendSelfToBody();
+				expect( domElement.relativeOffset( {x: 100, y: 100} ) ).to.eql( {x: 92, y: 92} );
+			} finally {
+				domElement.remove();
+			}
 		});
 
 		function testEvent(onEvent, performEvent) {

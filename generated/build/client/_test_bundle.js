@@ -212,7 +212,7 @@ describe("Drawing area", function() {
 }());
 
 },{"./client.js":4,"./dom_element.js":5}],2:[function(require,module,exports){
-/* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael, wwp */
+/* global describe, beforeEach, it, $, jQuery, expect, dump, Raphael */
 
 (function () {
 "use strict";
@@ -264,8 +264,12 @@ describe("DOM Element", function() {
 		});
 
 		it("converts page coordinates into relative element coordinates", function() {
-			domElement.appendSelfToBody();
-			expect( domElement.relativeOffset( {x: 100, y: 100} ) ).to.eql( {x: 92, y: 92} );
+			try {
+				domElement.appendSelfToBody();
+				expect( domElement.relativeOffset( {x: 100, y: 100} ) ).to.eql( {x: 92, y: 92} );
+			} finally {
+				domElement.remove();
+			}
 		});
 
 		function testEvent(onEvent, performEvent) {
