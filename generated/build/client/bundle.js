@@ -32,16 +32,17 @@ function handleDragEvents() {
 	drawingArea.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
 
-	function startDrag(relativePosition, event) {
-		start = relativePosition;
+	function startDrag(pageOffset, event) {
+		start = drawingArea.relativeOffset(pageOffset);
 		event.preventDefault();
 	}
 
-	function continueDrag(offset) {
+	function continueDrag(pageOffset) {
 		if(start === null) return;
 
-		svgCanvas.drawLine(start.x, start.y, offset.x, offset.y);
-		start = offset;
+		var end = drawingArea.relativeOffset(pageOffset);
+		svgCanvas.drawLine(start.x, start.y, end.x, end.y);
+		start = end;
 	}
 
 	function endDrag() {
@@ -212,5 +213,5 @@ module.exports = SvgCanvas;
 
 },{}],"./dom_element.js":[function(require,module,exports){
 module.exports=require('Rkd7/B');
-},{}]},{},["eYKSv0","Rkd7/B"])
+},{}]},{},["Rkd7/B","eYKSv0"])
 ;
