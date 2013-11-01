@@ -79,6 +79,16 @@ describe("DOM Element", function() {
 			}
 		}
 
+		it("clears all events (useful for testing and debuggin", function() {
+			domElement.onMouseDown(function() {
+				throw new Error("Event handler should be removed");
+			});
+
+			domElement.removeAllEventHandlers();
+
+			domElement.mouseDown(0, 0);
+		});
+
 	});
 
 });

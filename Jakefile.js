@@ -19,7 +19,7 @@
 
 	var NODE_VERSION = "v0.10.16";
 	var SUPPORTED_BROWSERS = [
-		"Firefox 24.0 (Linux)"
+		"Firefox 25.0 (Linux)"
 	];
 
 	var GENERATED_DIR = "generated";
@@ -164,6 +164,9 @@
 	function serverTestFiles() {
 		var testFiles = new jake.FileList();
 		testFiles.include("src/server/**/_*_test.js");
+
+		testFiles.exclude("src/server/_release_test.js");
+		
 		testFiles = testFiles.toArray();
 		return testFiles;
 	}

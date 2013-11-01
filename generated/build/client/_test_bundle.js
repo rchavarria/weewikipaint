@@ -25,7 +25,8 @@ describe("Drawing area", function() {
 
 	afterEach( function() {
 		drawingArea.remove();
-		client.drawingAreaHasBeenRemovedFromDom();
+		//client.drawingAreaHasBeenRemovedFromDom();
+		documentBody.removeAllEventHandlers();
 	});
 
 	it("should be initialized with Raphael", function() {
@@ -293,6 +294,16 @@ describe("DOM Element", function() {
 			}
 		}
 
+		it("clears all events (useful for testing and debuggin", function() {
+			domElement.onMouseDown(function() {
+				expect(true).to.be(false); // deliberately fail
+			});
+
+			domElement.removeAllEventHandlers();
+
+			domElement.mouseDown(0, 0);
+		});
+
 	});
 
 });
@@ -368,7 +379,7 @@ var svgCanvas;
 var documentBody;
 
 exports.initializeDrawingArea = function(domElement) {
-	if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
+	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
 	documentBody = new HtmlElement($(document.body));
@@ -522,6 +533,11 @@ function mouseStart(self, callback) {
 		callback(pageOffset, event);
 	};
 }
+
+HtmlElement.prototype.removeAllEventHandlers = function() {
+	// call to jQuery .off() method to remove all event handlers on this object
+	this.element.off();
+};
 
 }());
 

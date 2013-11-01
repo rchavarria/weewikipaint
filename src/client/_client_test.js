@@ -24,7 +24,8 @@ describe("Drawing area", function() {
 
 	afterEach( function() {
 		drawingArea.remove();
-		client.drawingAreaHasBeenRemovedFromDom();
+		//client.drawingAreaHasBeenRemovedFromDom();
+		documentBody.removeAllEventHandlers();
 	});
 
 	it("should be initialized with Raphael", function() {

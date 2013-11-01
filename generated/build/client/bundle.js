@@ -14,7 +14,7 @@ var svgCanvas;
 var documentBody;
 
 exports.initializeDrawingArea = function(domElement) {
-	if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
+	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
 	documentBody = new HtmlElement($(document.body));
@@ -171,6 +171,11 @@ function mouseStart(self, callback) {
 	};
 }
 
+HtmlElement.prototype.removeAllEventHandlers = function() {
+	// call to jQuery .off() method to remove all event handlers on this object
+	this.element.off();
+};
+
 }());
 
 },{}],4:[function(require,module,exports){
@@ -223,5 +228,5 @@ module.exports = SvgCanvas;
 
 },{}],"./dom_element.js":[function(require,module,exports){
 module.exports=require('Rkd7/B');
-},{}]},{},["Rkd7/B","eYKSv0"])
+},{}]},{},["eYKSv0","Rkd7/B"])
 ;

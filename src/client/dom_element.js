@@ -104,4 +104,9 @@ function mouseStart(self, callback) {
 	};
 }
 
+HtmlElement.prototype.removeAllEventHandlers = function() {
+	// call to jQuery .off() method to remove all event handlers on this object
+	this.element.off();
+};
+
 }());
