@@ -102,7 +102,7 @@ HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 function mouseEventFn(event) {
 	return function(relativeX, relativeY) {
 		var jqElement = this.element;
-		var offset = pageOffset(this, relativeX, relativeY);
+		var offset = this.pageOffset( { x: relativeX, y: relativeY } );
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
@@ -123,7 +123,7 @@ function sendTouchEventFn(event) {
 		touchEvent.initTouchEvent(event, true, true);
 
 		var element = this.element;
-		var offset = pageOffset(this, relativeX, relativeY);
+		var offset = this.pageOffset( { x: relativeX, y: relativeY } );
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
 		eventData.pageY = offset.y;
@@ -156,13 +156,13 @@ HtmlElement.prototype.relativeOffset = function(pageOffset) {
 	};
 };
 
-function pageOffset(self, relativeX, relativeY) {
-	var topLeftOfDrawingArea = self.element.offset();
+HtmlElement.prototype.pageOffset = function(relativeOffset) {
+	var elementPageOffset = this.element.offset();
 	return {
-		x: relativeX + topLeftOfDrawingArea.left,
-		y: relativeY + topLeftOfDrawingArea.top
+		x: relativeOffset.x + elementPageOffset.left,
+		y: relativeOffset.y + elementPageOffset.top
 	};
-}
+};
 
 function mouseStart(self, callback) {
 	return function(event) {

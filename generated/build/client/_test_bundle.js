@@ -277,6 +277,15 @@ describe("DOM Element", function() {
 			}
 		});
 
+		it("converts relative coordinates into page element coordinates", function() {
+			try {
+				domElement.appendSelfToBody();
+				expect( domElement.pageOffset( {x: 100, y: 100} ) ).to.eql( {x: 108, y: 108} );
+			} finally {
+				domElement.remove();
+			}
+		});
+
 		function testEvent(onEvent, performEvent) {
 			try {
 				domElement.appendSelfToBody();
@@ -296,7 +305,7 @@ describe("DOM Element", function() {
 
 		it("clears all events (useful for testing and debuggin", function() {
 			domElement.onMouseDown(function() {
-				expect(true).to.be(false); // deliberately fail
+				throw new Error("Event handler should be removed");
 			});
 
 			domElement.removeAllEventHandlers();
@@ -465,7 +474,7 @@ HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 function mouseEventFn(event) {
 	return function(relativeX, relativeY) {
 		var jqElement = this.element;
-		var offset = pageOffset(this, relativeX, relativeY);
+		var offset = this.pageOffset( { x: relativeX, y: relativeY } );
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
@@ -486,7 +495,7 @@ function sendTouchEventFn(event) {
 		touchEvent.initTouchEvent(event, true, true);
 
 		var element = this.element;
-		var offset = pageOffset(this, relativeX, relativeY);
+		var offset = this.pageOffset( { x: relativeX, y: relativeY } );
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;
 		eventData.pageY = offset.y;
@@ -519,13 +528,13 @@ HtmlElement.prototype.relativeOffset = function(pageOffset) {
 	};
 };
 
-function pageOffset(self, relativeX, relativeY) {
-	var topLeftOfDrawingArea = self.element.offset();
+HtmlElement.prototype.pageOffset = function(relativeOffset) {
+	var elementPageOffset = this.element.offset();
 	return {
-		x: relativeX + topLeftOfDrawingArea.left,
-		y: relativeY + topLeftOfDrawingArea.top
+		x: relativeOffset.x + elementPageOffset.left,
+		y: relativeOffset.y + elementPageOffset.top
 	};
-}
+};
 
 function mouseStart(self, callback) {
 	return function(event) {

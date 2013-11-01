@@ -62,6 +62,15 @@ describe("DOM Element", function() {
 			}
 		});
 
+		it("converts relative coordinates into page element coordinates", function() {
+			try {
+				domElement.appendSelfToBody();
+				expect( domElement.pageOffset( {x: 100, y: 100} ) ).to.eql( {x: 108, y: 108} );
+			} finally {
+				domElement.remove();
+			}
+		});
+
 		function testEvent(onEvent, performEvent) {
 			try {
 				domElement.appendSelfToBody();
