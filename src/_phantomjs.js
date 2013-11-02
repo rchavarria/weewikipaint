@@ -1,5 +1,5 @@
 // Copyright (c) 2013 Titanium I.T. LLC. All rights reserved. See LICENSE.TXT for details.
-/*global phantom, wwp, $ */
+/*global phantom, wwp, $, document */
 
 (function() {
     "use strict";
@@ -31,7 +31,7 @@
             var client = require("./client.js");
             var HtmlElement = require("./dom_element.js");
 
-            var drawingArea = new HtmlElement($("#drawingArea"));
+            var drawingArea = new HtmlElement(document.getElementById("drawingArea"));
             drawingArea.mouseDown(10, 20);
             drawingArea.mouseMove(50, 60);
             drawingArea.mouseUp(50, 60);

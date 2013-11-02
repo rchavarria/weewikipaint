@@ -1,10 +1,10 @@
-/* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
+/* global describe, it, $, jQuery, expect, dump, Raphael, document */
 
 (function () {
 "use strict";
 
-var HtmlElement = module.exports = function HtmlElement(jQueryElement) {
-	this.element = jQueryElement;
+var HtmlElement = module.exports = function HtmlElement(domElement) {
+	this.element = $(domElement);
 };
 
 HtmlElement.fromHTML = function(html) {

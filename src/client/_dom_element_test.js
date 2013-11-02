@@ -42,7 +42,7 @@ describe("DOM Element", function() {
 
 		it("appends to body", function() {
 			try {
-				var body = new HtmlElement($(document.body));
+				var body = new HtmlElement(document.body);
 				var childrenBeforeAppend = body.element.children().length;
 				domElement.appendSelfToBody();
 				var childrenAfterAppend = body.element.children().length;

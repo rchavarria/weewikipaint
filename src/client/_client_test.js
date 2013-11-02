@@ -16,12 +16,12 @@ describe("Drawing area", function() {
 	var svgCanvas;
 
 	beforeEach(function() {
-		documentBody = new HtmlElement($(document.body));
+		documentBody = new HtmlElement(document.body);
 		
 		drawingArea = HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		drawingArea.appendSelfToBody();
 
-		windowElement = new HtmlElement($(window));
+		windowElement = new HtmlElement(window);
 
 		svgCanvas = client.initializeDrawingArea(drawingArea);
 	});

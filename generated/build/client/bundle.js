@@ -18,10 +18,9 @@ exports.initializeDrawingArea = function(domElement) {
 	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
-	documentBody = new HtmlElement($(document.body));
-	windowElement = new HtmlElement($(window));
+	documentBody = new HtmlElement(document.body);
+	windowElement = new HtmlElement(window);
 
-	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
@@ -69,13 +68,13 @@ function handleDragEvents() {
 },{"./dom_element.js":"Rkd7/B","./svg_canvas.js":4}],"./client.js":[function(require,module,exports){
 module.exports=require('eYKSv0');
 },{}],"Rkd7/B":[function(require,module,exports){
-/* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
+/* global describe, it, $, jQuery, expect, dump, Raphael, document */
 
 (function () {
 "use strict";
 
-var HtmlElement = module.exports = function HtmlElement(jQueryElement) {
-	this.element = jQueryElement;
+var HtmlElement = module.exports = function HtmlElement(domElement) {
+	this.element = $(domElement);
 };
 
 HtmlElement.fromHTML = function(html) {

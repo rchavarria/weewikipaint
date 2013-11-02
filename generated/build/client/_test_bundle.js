@@ -17,12 +17,12 @@ describe("Drawing area", function() {
 	var svgCanvas;
 
 	beforeEach(function() {
-		documentBody = new HtmlElement($(document.body));
+		documentBody = new HtmlElement(document.body);
 		
 		drawingArea = HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		drawingArea.appendSelfToBody();
 
-		windowElement = new HtmlElement($(window));
+		windowElement = new HtmlElement(window);
 
 		svgCanvas = client.initializeDrawingArea(drawingArea);
 	});
@@ -303,7 +303,7 @@ describe("DOM Element", function() {
 
 		it("appends to body", function() {
 			try {
-				var body = new HtmlElement($(document.body));
+				var body = new HtmlElement(document.body);
 				var childrenBeforeAppend = body.element.children().length;
 				domElement.appendSelfToBody();
 				var childrenAfterAppend = body.element.children().length;
@@ -449,10 +449,9 @@ exports.initializeDrawingArea = function(domElement) {
 	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
-	documentBody = new HtmlElement($(document.body));
-	windowElement = new HtmlElement($(window));
+	documentBody = new HtmlElement(document.body);
+	windowElement = new HtmlElement(window);
 
-	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
 	handleDragEvents();
 
@@ -498,13 +497,13 @@ function handleDragEvents() {
 }());
 
 },{"./dom_element.js":5,"./svg_canvas.js":6}],5:[function(require,module,exports){
-/* global describe, it, $, jQuery, expect, dump, Raphael, wwp:true */
+/* global describe, it, $, jQuery, expect, dump, Raphael, document */
 
 (function () {
 "use strict";
 
-var HtmlElement = module.exports = function HtmlElement(jQueryElement) {
-	this.element = jQueryElement;
+var HtmlElement = module.exports = function HtmlElement(domElement) {
+	this.element = $(domElement);
 };
 
 HtmlElement.fromHTML = function(html) {
