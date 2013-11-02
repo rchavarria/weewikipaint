@@ -11,12 +11,14 @@ var HtmlElement = require("./dom_element.js");
 var drawingArea;
 var svgCanvas;
 var documentBody;
+var windowElement;
 
 exports.initializeDrawingArea = function(domElement) {
 	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
 	documentBody = new HtmlElement($(document.body));
+	windowElement = new HtmlElement($(window));
 
 	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
@@ -38,8 +40,10 @@ function handleDragEvents() {
 	documentBody.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	drawingArea.onMouseUp(endDrag);
+	documentBody.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
+
+	windowElement.onMouseUp(endDrag);
 
 	function startDrag(pageOffset, event) {
 		start = drawingArea.relativeOffset(pageOffset);

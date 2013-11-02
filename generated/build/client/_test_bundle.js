@@ -13,6 +13,7 @@ describe("Drawing area", function() {
 
 	var drawingArea;
 	var documentBody;
+	var windowElement;
 	var svgCanvas;
 
 	beforeEach(function() {
@@ -20,6 +21,9 @@ describe("Drawing area", function() {
 		
 		drawingArea = HtmlElement.fromHTML("<div style='width: 321px; height: 123px; border-width: 13px;'>hi</div>");
 		drawingArea.appendSelfToBody();
+
+		windowElement = new HtmlElement($(window));
+
 		svgCanvas = client.initializeDrawingArea(drawingArea);
 	});
 
@@ -134,6 +138,46 @@ describe("Drawing area", function() {
 				[20, 30, 50, 60],
 				[50, 60, 350, 70],
 				[350, 70, 70, 90]
+			]);
+		});
+
+		it("stops drawing if mouse leaves drawing area and mouse button is released", function() {
+			// ask
+			drawingArea.mouseDown(20, 30);
+			drawingArea.mouseMove(50, 60);
+			drawingArea.mouseLeave(350, 70);
+
+			var pageCoordinates = drawingArea.relativeOffset( { x: 350, y: 70 } );
+			var bodyRelative = documentBody.pageOffset(pageCoordinates);
+
+			documentBody.mouseMove(bodyRelative.x, bodyRelative.y);
+			documentBody.mouseUp(bodyRelative.x, bodyRelative.y);
+			drawingArea.mouseMove(70, 90);
+			drawingArea.mouseUp(70, 90);
+
+			// assert
+			expect(lineSegments()).to.eql([
+				[20, 30, 50, 60],
+				[50, 60, 350, 70]
+			]);
+		});
+
+		it("stops drawing if mouse leaves window and mouse button is released", function() {
+			// ask
+			drawingArea.mouseDown(20, 30);
+			drawingArea.mouseMove(50, 60);
+			drawingArea.mouseLeave(350, 70);
+
+			windowElement.mouseLeave(0, 0);
+			windowElement.mouseUp(0, 0);
+
+			drawingArea.mouseMove(70, 90);
+			drawingArea.mouseUp(70, 90);
+
+			// assert
+			expect(lineSegments()).to.eql([
+				[20, 30, 50, 60],
+				[50, 60, 350, 70]
 			]);
 		});
 
@@ -389,12 +433,14 @@ var HtmlElement = require("./dom_element.js");
 var drawingArea;
 var svgCanvas;
 var documentBody;
+var windowElement;
 
 exports.initializeDrawingArea = function(domElement) {
 	//if (svgCanvas !== null) throw new Error("Client.js is not re-entrant");
 
 	drawingArea = domElement;
 	documentBody = new HtmlElement($(document.body));
+	windowElement = new HtmlElement($(window));
 
 	drawingArea = domElement;
 	svgCanvas = new SvgCanvas(domElement);
@@ -416,8 +462,10 @@ function handleDragEvents() {
 	documentBody.onMouseMove(continueDrag);
 	drawingArea.onTouchMove(continueDrag);
 
-	drawingArea.onMouseUp(endDrag);
+	documentBody.onMouseUp(endDrag);
 	drawingArea.onTouchEnd(endDrag);
+
+	windowElement.onMouseUp(endDrag);
 
 	function startDrag(pageOffset, event) {
 		start = drawingArea.relativeOffset(pageOffset);
