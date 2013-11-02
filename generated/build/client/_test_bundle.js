@@ -122,7 +122,10 @@ describe("Drawing area", function() {
 			drawingArea.mouseMove(50, 60);
 			drawingArea.mouseLeave(350, 70);
 
-			documentBody.mouseMove(350, 70);
+			var pageCoordinates = drawingArea.relativeOffset( { x: 350, y: 70 } );
+			var bodyRelative = documentBody.pageOffset(pageCoordinates);
+
+			documentBody.mouseMove(bodyRelative.x, bodyRelative.y);
 			drawingArea.mouseMove(70, 90);
 			drawingArea.mouseUp(70, 90);
 
