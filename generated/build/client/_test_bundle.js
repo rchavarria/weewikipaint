@@ -360,6 +360,17 @@ describe("DOM Element", function() {
 			domElement.mouseDown(0, 0);
 		});
 
+		it("allows mouse events to be triggered without coordinates", function() {
+			var eventPageOffset;
+			domElement.onMouseDown(function(pageOffset) {
+				eventPageOffset = pageOffset;
+			});
+
+			domElement.mouseDown();
+
+			expect(eventPageOffset).to.be.eql({ x: 0, y: 0 });
+		});
+
 	});
 
 });
@@ -525,7 +536,13 @@ HtmlElement.prototype.mouseUp = mouseEventFn("mouseup");
 function mouseEventFn(event) {
 	return function(relativeX, relativeY) {
 		var jqElement = this.element;
-		var offset = this.pageOffset( { x: relativeX, y: relativeY } );
+		
+		var offset;
+		if(relativeX === undefined || relativeY === undefined) {
+			offset = { x: 0, y: 0 };
+		} else {
+			offset = this.pageOffset( { x: relativeX, y: relativeY } );
+		}
 
 		var eventData = new jQuery.Event();
 		eventData.pageX = offset.x;

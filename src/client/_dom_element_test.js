@@ -98,6 +98,17 @@ describe("DOM Element", function() {
 			domElement.mouseDown(0, 0);
 		});
 
+		it("allows mouse events to be triggered without coordinates", function() {
+			var eventPageOffset;
+			domElement.onMouseDown(function(pageOffset) {
+				eventPageOffset = pageOffset;
+			});
+
+			domElement.mouseDown();
+
+			expect(eventPageOffset).to.be.eql({ x: 0, y: 0 });
+		});
+
 	});
 
 });
