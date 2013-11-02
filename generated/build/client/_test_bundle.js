@@ -168,16 +168,15 @@ describe("Drawing area", function() {
 			drawingArea.mouseMove(50, 60);
 			drawingArea.mouseLeave(350, 70);
 
-			windowElement.mouseLeave(0, 0);
-			windowElement.mouseUp(0, 0);
+			windowElement.mouseLeave();
+			windowElement.mouseUp();
 
 			drawingArea.mouseMove(70, 90);
 			drawingArea.mouseUp(70, 90);
 
 			// assert
 			expect(lineSegments()).to.eql([
-				[20, 30, 50, 60],
-				[50, 60, 350, 70]
+				[20, 30, 50, 60]
 			]);
 		});
 
